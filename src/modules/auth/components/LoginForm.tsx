@@ -1,7 +1,7 @@
 "use client";
 import { MainButton } from "@/components/ui/buttom/MainButtom";
 import { ImageButton } from "@/components/ui/buttom/ImageButtom";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/components/ui/input/Input";
 import steamImage from "../../../../public/steam-logo.png"
 import { useLogin } from "../hooks/useLogin";
 import { useState } from "react";
@@ -116,7 +116,7 @@ export function LoginForm() {
         <ImageButton src={steamImage.src} className="mt-4 mx-auto w-max" imgClassName="h-10 w-auto" onClick={() => console.log("Iniciar sesión con Steam")} >
 
         </ImageButton>
-        <p className="mt-4 text-center text-sm text-zinc-600 dark:text-zinc-400">¿Eres nuevo? <a href="/register" className="text-blue-500 hover:underline">Regístrate</a></p>
+        <p className="mt-4 text-center text-sm text-zinc-600 dark:text-zinc-400">¿Eres nuevo? <a href="/auth/register" className="text-blue-500 hover:underline">Regístrate</a></p>
       </div>
     </>
   );
