@@ -1,7 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/input/Input";
-import { InputDate } from "@/components/ui/input/input-date";
+import { InputDate } from "@/components/ui/input/InputDate";
 import { SelectCountry } from "@/modules/shared/country/components/SelectCountry";
 import { useRegister } from "../hooks/useRegister";
 import React from "react";
@@ -86,7 +86,7 @@ export function RegisterForm() {
                     sm:px-12
                     min-h-[520px]
                     rounded-2xl
-                    bg-white dark:bg-[#131A2A]
+                    bg-white dark:bg-altv-maindark
                 "
             >
                 <h2

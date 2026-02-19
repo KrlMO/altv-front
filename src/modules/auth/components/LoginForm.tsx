@@ -57,7 +57,7 @@ export function LoginForm() {
     sm:px-15
     min-h-[420px]
     rounded-xl
-    bg-white dark:bg-[#131A2A]
+    bg-white dark:bg-altv-maindark
   "
       >
 
@@ -113,9 +113,7 @@ export function LoginForm() {
         </form>
         <p className="mt-6 text-center text-sm text-zinc-600 dark:text-zinc-400">O tambien puedes iniciar sesión con</p>
 
-        <ImageButton src={steamImage.src} className="mt-4 mx-auto w-max" imgClassName="h-10 w-auto" onClick={() => console.log("Iniciar sesión con Steam")} >
-
-        </ImageButton>
+        <ImageButton src={steamImage.src} className="mt-4 mx-auto w-max" imgClassName="h-10 w-auto" onClick={() => console.log("Iniciar sesión con Steam")}></ImageButton>
         <p className="mt-4 text-center text-sm text-zinc-600 dark:text-zinc-400">¿Eres nuevo? <a href="/auth/register" className="text-blue-500 hover:underline">Regístrate</a></p>
       </div>
     </>

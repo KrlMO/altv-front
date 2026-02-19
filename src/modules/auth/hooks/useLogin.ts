@@ -16,10 +16,24 @@ export function useLogin() {
 
             return result;
         } catch (err: any) {
-            if (err.status === 401) {
-                setError("Credenciales inválidas");
-            } else {
-                setError(err.message || "Error inesperado");
+            switch (err.status) {
+                case 400:
+                    console.error("Bad Request:", err);
+                    break;
+                case 401:
+                    console.error("Credenciales inválidas:", err);
+                    break;
+                case 403:
+                    console.error("Acceso prohibido:", err);
+                    break;
+                case 404:
+                    console.error("Endpoint no encontrado:", err);
+                    break;
+                case 500:
+                    console.error("Internal Server Error:", err);
+                    break;
+                default:
+                    console.error("Error desconocido:", err);
             }
         } finally {
             setLoading(false);
