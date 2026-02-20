@@ -9,7 +9,7 @@ export function AuthSection() {
     if (!isLogged) {
         return (
             <div className="flex items-center gap-2">
-                <UserIcon strokeWidth={1.4} className="h-17 w-17 text-gray-700 dark:text-ciangreen" />
+                <UserIcon strokeWidth={1.4} className="h-14 w-14 text-gray-700 dark:text-ciangreen" />
                 <Link
                     href="/auth/login"
                     className="px-4 py-2 rounded-[20px] bg-btn-primary text-white hover:opacity-90 transition"

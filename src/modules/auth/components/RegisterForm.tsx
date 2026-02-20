@@ -11,7 +11,7 @@ import steamImage from "../../../../public/steam-logo.png"
 import Link from "next/link";
 import Image from "next/image";
 import altv_logo from "../../../../public/altv-logo.svg"
-import { MainIcon } from "@/components/ui/icons/MainIcon";
+import { AltvButton } from "@/components/ui/buttom/AltvButtom";
 
 export function RegisterForm() {
     const { register, loading, error } = useRegister();
@@ -94,7 +94,7 @@ export function RegisterForm() {
                 "
             >
                 <div className="items-center justify-center flex">
-                    <MainIcon height={100}></MainIcon>
+                    <AltvButton height={100}></AltvButton>
                 </div>
                 <h2
                     className="
