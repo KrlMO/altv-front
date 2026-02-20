@@ -5,7 +5,10 @@ export function SearchBar() {
     const [query, setQuery] = useState("");
 
     return (
-        <div className="relative w-96">
+        <div className="hidden lg:block relative w-96">
+            <button className="lg:hidden">
+                🔍
+            </button>
             <input
                 type="text"
                 placeholder="Buscar jugador, equipo o torneo..."

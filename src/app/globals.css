@@ -4,9 +4,11 @@
   --background: #ffffff;
   --foreground: #171717;
   --maindark: #131A2A;
-  --primary: #D300D8;
+  --primary: #88008B;
   --seconday: #15ffeb8a;
-  --darksecondary: #063f3a;
+  --lightpink: #D300D8;
+  --ciangreen: #15FFEB;
+  --darksecondary: #00302c;
   --darkbackground: #0A0F1F;
   --darkbgcontent: #0b1127;
   --shadow-navbar:
@@ -23,6 +25,8 @@
   --color-altv-maindark: var(--maindark);
   --color-altv-background: var(--darkbackground);
   --color-altv-bgcontent: var(--darkbgcontent);
+  --color-lightpink: var(--lightpink);
+  --color-ciangreen: var(--ciangreen);
   --color-btn-secondary: var(--seconday);
   --color-btn-primary: var(--primary);
   --color-altv-darksecondary: var(--darksecondary);

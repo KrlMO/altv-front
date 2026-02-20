@@ -5,6 +5,10 @@ import { Input } from "@/components/ui/input/Input";
 import steamImage from "../../../../public/steam-logo.png"
 import { useLogin } from "../hooks/useLogin";
 import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import altv_logo from "../../../../public/altv-logo.svg"
+import { MainIcon } from "@/components/ui/icons/MainIcon";
 
 function validateEmail(value: string) {
   if (!value) return undefined;
@@ -60,7 +64,9 @@ export function LoginForm() {
     bg-white dark:bg-altv-maindark
   "
       >
-
+        <div className="items-center justify-center flex">
+          <MainIcon height={100}></MainIcon>
+        </div>
 
         <h2
           className="

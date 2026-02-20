@@ -8,6 +8,10 @@ import React from "react";
 import { MainButton } from "@/components/ui/buttom/MainButtom";
 import { ImageButton } from "@/components/ui/buttom/ImageButtom";
 import steamImage from "../../../../public/steam-logo.png"
+import Link from "next/link";
+import Image from "next/image";
+import altv_logo from "../../../../public/altv-logo.svg"
+import { MainIcon } from "@/components/ui/icons/MainIcon";
 
 export function RegisterForm() {
     const { register, loading, error } = useRegister();
@@ -89,6 +93,9 @@ export function RegisterForm() {
                     bg-white dark:bg-altv-maindark
                 "
             >
+                <div className="items-center justify-center flex">
+                    <MainIcon height={100}></MainIcon>
+                </div>
                 <h2
                     className="
                     text-2xl

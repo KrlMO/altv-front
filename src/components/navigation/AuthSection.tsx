@@ -1,18 +1,22 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { UserIcon } from "../ui/icons/UserIcon";
 
 export function AuthSection() {
-    const [isLogged, setIsLogged] = useState(false); // luego viene del contexto
+    const [isLogged, setIsLogged] = useState(false);
 
     if (!isLogged) {
         return (
-            <Link
-                href="/login"
-                className="px-4 py-2 rounded-lg bg-btn-primary text-white hover:opacity-90 transition"
-            >
-                Iniciar sesión
-            </Link>
+            <div className="flex items-center gap-2">
+                <UserIcon strokeWidth={1.4} className="h-17 w-17 text-gray-700 dark:text-ciangreen" />
+                <Link
+                    href="/auth/login"
+                    className="px-4 py-2 rounded-[20px] bg-btn-primary text-white hover:opacity-90 transition"
+                >
+                    Iniciar sesión
+                </Link>
+            </div>
         );
     }
 
@@ -22,7 +26,6 @@ export function AuthSection() {
                 <div className="h-8 w-8 rounded-full bg-btn-primary" />
             </button>
 
-            {/* Dropdown futuro */}
             <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-altv-maindark shadow-lg rounded-lg p-2">
                 <Link href="/profile" className="block px-2 py-1 hover:bg-gray-100 dark:hover:bg-altv-darksecondary">
                     Mi cuenta
