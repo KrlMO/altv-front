@@ -14,3 +14,9 @@ export async function registerRequest(data: any) {
     body: JSON.stringify(data),
   });
 }
+
+export async function refreshRequest() {
+  return apiFetch<LoginResponseDTO>("/v1/auth/refresh", {
+    method: "POST",
+  });
+}

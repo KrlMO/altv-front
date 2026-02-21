@@ -3,12 +3,13 @@ import { MainButton } from "@/components/ui/buttom/MainButtom";
 import { ImageButton } from "@/components/ui/buttom/ImageButtom";
 import { Input } from "@/components/ui/input/Input";
 import steamImage from "../../../../public/steam-logo.png"
-import { useLogin } from "../hooks/useLogin";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import altv_logo from "../../../../public/altv-logo.svg"
 import { AltvButton } from "@/components/ui/buttom/AltvButtom";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 function validateEmail(value: string) {
   if (!value) return undefined;
@@ -18,8 +19,8 @@ function validateEmail(value: string) {
 
 
 export function LoginForm() {
-
-  const { login, loading, error } = useLogin();
+  const router = useRouter();
+  const { login, loading, error } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,8 +30,10 @@ export function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    await login({ email, password });
+    const success = await login({ email, password });
+    if (success) {
+      router.push("/");
+    }
   };
 
   return (

@@ -11,6 +11,6 @@ export interface UserResponseDTO {
 }
 
 export interface LoginResponseDTO {
-    token: string;
+    access_token: string;
     user: UserResponseDTO;
 }
