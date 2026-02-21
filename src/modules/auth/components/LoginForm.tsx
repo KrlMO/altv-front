@@ -3,8 +3,13 @@ import { MainButton } from "@/components/ui/buttom/MainButtom";
 import { ImageButton } from "@/components/ui/buttom/ImageButtom";
 import { Input } from "@/components/ui/input/Input";
 import steamImage from "../../../../public/steam-logo.png"
-import { useLogin } from "../hooks/useLogin";
 import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import altv_logo from "../../../../public/altv-logo.svg"
+import { AltvButton } from "@/components/ui/buttom/AltvButtom";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 function validateEmail(value: string) {
   if (!value) return undefined;
@@ -14,8 +19,8 @@ function validateEmail(value: string) {
 
 
 export function LoginForm() {
-
-  const { login, loading, error } = useLogin();
+  const router = useRouter();
+  const { login, loading, error } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,8 +30,10 @@ export function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    await login({ email, password });
+    const success = await login({ email, password });
+    if (success) {
+      router.push("/");
+    }
   };
 
   return (
@@ -57,10 +64,12 @@ export function LoginForm() {
     sm:px-15
     min-h-[420px]
     rounded-xl
-    bg-white dark:bg-[#131A2A]
+    bg-white dark:bg-altv-maindark
   "
       >
-
+        <div className="items-center justify-center flex">
+          <AltvButton height={100}></AltvButton>
+        </div>
 
         <h2
           className="
@@ -113,9 +122,7 @@ export function LoginForm() {
         </form>
         <p className="mt-6 text-center text-sm text-zinc-600 dark:text-zinc-400">O tambien puedes iniciar sesión con</p>
 
-        <ImageButton src={steamImage.src} className="mt-4 mx-auto w-max" imgClassName="h-10 w-auto" onClick={() => console.log("Iniciar sesión con Steam")} >
-
-        </ImageButton>
+        <ImageButton src={steamImage.src} className="mt-4 mx-auto w-max" imgClassName="h-10 w-auto" onClick={() => console.log("Iniciar sesión con Steam")}></ImageButton>
         <p className="mt-4 text-center text-sm text-zinc-600 dark:text-zinc-400">¿Eres nuevo? <a href="/auth/register" className="text-blue-500 hover:underline">Regístrate</a></p>
       </div>
     </>

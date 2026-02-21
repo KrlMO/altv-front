@@ -1,13 +1,17 @@
 "use client";
 
 import { Input } from "@/components/ui/input/Input";
-import { InputDate } from "@/components/ui/input/input-date";
+import { InputDate } from "@/components/ui/input/InputDate";
 import { SelectCountry } from "@/modules/shared/country/components/SelectCountry";
 import { useRegister } from "../hooks/useRegister";
 import React from "react";
 import { MainButton } from "@/components/ui/buttom/MainButtom";
 import { ImageButton } from "@/components/ui/buttom/ImageButtom";
 import steamImage from "../../../../public/steam-logo.png"
+import Link from "next/link";
+import Image from "next/image";
+import altv_logo from "../../../../public/altv-logo.svg"
+import { AltvButton } from "@/components/ui/buttom/AltvButtom";
 
 export function RegisterForm() {
     const { register, loading, error } = useRegister();
@@ -86,9 +90,12 @@ export function RegisterForm() {
                     sm:px-12
                     min-h-[520px]
                     rounded-2xl
-                    bg-white dark:bg-[#131A2A]
+                    bg-white dark:bg-altv-maindark
                 "
             >
+                <div className="items-center justify-center flex">
+                    <AltvButton height={100}></AltvButton>
+                </div>
                 <h2
                     className="
                     text-2xl

@@ -3,6 +3,17 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --maindark: #131A2A;
+  --primary: #88008B;
+  --seconday: #15ffeb8a;
+  --lightpink: #D300D8;
+  --ciangreen: #15FFEB;
+  --darksecondary: #00302c;
+  --darkbackground: #0A0F1F;
+  --darkbgcontent: #0b1127;
+  --shadow-navbar:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 6px 18px rgba(21, 255, 235, 0.18);
 }
 
 @theme inline {
@@ -10,6 +21,17 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-altv-maindark: var(--maindark);
+  --color-altv-background: var(--darkbackground);
+  --color-altv-bgcontent: var(--darkbgcontent);
+  --color-lightpink: var(--lightpink);
+  --color-ciangreen: var(--ciangreen);
+  --color-btn-secondary: var(--seconday);
+  --color-btn-primary: var(--primary);
+  --color-altv-darksecondary: var(--darksecondary);
+
+  --shadow-altv-navbar: 0 4px 12px rgba(21, 255, 235, 0.1);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +45,8 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar-elevated {
+  box-shadow: var(--shadow-navbar);
 }
