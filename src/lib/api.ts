@@ -5,6 +5,7 @@ export async function apiFetch<T>(
     const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
     const response = await fetch(`${API_URL}${endpoint}`, {
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
             ...(options?.headers || {}),
