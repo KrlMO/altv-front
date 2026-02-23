@@ -20,3 +20,9 @@ export async function refreshRequest() {
     method: "POST",
   });
 }
+
+export async function logoutRequest() {
+  return apiFetch("/v1/auth/logout", {
+    method: "POST",
+  });
+}

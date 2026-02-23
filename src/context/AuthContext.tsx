@@ -8,7 +8,7 @@ import {
     ReactNode,
 } from "react";
 
-import { loginRequest, refreshRequest } from "@/modules/auth/services/auth.service";
+import { loginRequest, refreshRequest, logoutRequest } from "@/modules/auth/services/auth.service";
 import { LoginDTO } from "@/modules/auth/dto/login.dto";
 import { User } from "@/types/user";
 
@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
             setLoading(true);
             setError(null);
-            debugger
+
             const result = await loginRequest(data);
 
             setUser(result.user);
@@ -67,9 +67,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
 
-    const logout = () => {
-        setUser(null);
-        setAccessToken(null);
+    const logout = async () => {
+        try {
+            debugger
+            await logoutRequest();
+        } catch (err) {
+            console.error("Error during logout:", err);
+        } finally {
+            setUser(null);
+            setAccessToken(null);
+        }
     };
 
 
