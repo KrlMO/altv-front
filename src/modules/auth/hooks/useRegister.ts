@@ -6,17 +6,16 @@ export function useRegister() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const register = async (data: RegisterRequestDTO) => {
+    const register = async (data: RegisterRequestDTO): Promise<Boolean> => {
         try {
             setLoading(true);
             setError(null);
-            const result = await registerRequest(data);
-            
-            console.log("Register OK:", result);
+            await registerRequest(data);
 
-            return result;
+            return true;
         } catch (err: any) {
             setError(err.message || "Error inesperado");
+            return false;
         } finally {
             setLoading(false);
         }

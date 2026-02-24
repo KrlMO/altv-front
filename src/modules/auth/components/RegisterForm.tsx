@@ -12,9 +12,11 @@ import Link from "next/link";
 import Image from "next/image";
 import altv_logo from "../../../../public/altv-logo.svg"
 import { AltvButton } from "@/components/ui/buttom/AltvButtom";
+import { useRouter } from "next/navigation";
 
 export function RegisterForm() {
     const { register, loading, error } = useRegister();
+    const router = useRouter();
     const [form, setForm] = React.useState({
         first_name: "",
         last_name: "",
@@ -59,7 +61,12 @@ export function RegisterForm() {
 
         if (!validateForm()) return;
 
-        await register(form);
+        const success = await register(form);
+        if (!success) {
+            setFormError("Error al registrar el usuario.");
+        }else{
+            router.push("/");
+        }
     };
 
     return (
