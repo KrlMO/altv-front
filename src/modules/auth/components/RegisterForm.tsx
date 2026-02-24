@@ -29,7 +29,7 @@ export function RegisterForm() {
     const [formError, setFormError] = React.useState<string | null>(null);
 
     const validateForm = () => {
-        debugger
+        //
         console.log("Validating form:", form);
         if (
             !form.first_name ||

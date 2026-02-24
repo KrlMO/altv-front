@@ -1,8 +1,9 @@
 import { apiFetch } from "@/lib/api";
 import { LoginDTO, LoginResponseDTO } from "../dto/login.dto";
+import { ApiResponse } from "@/types/api";
 
 export async function loginRequest(data: LoginDTO) {
-  return apiFetch<LoginResponseDTO>("/v1/auth/login/local", {
+  return apiFetch<ApiResponse<LoginResponseDTO>>("/v1/auth/login/local", {
     method: "POST",
     body: JSON.stringify(data),
   });
@@ -16,7 +17,7 @@ export async function registerRequest(data: any) {
 }
 
 export async function refreshRequest() {
-  return apiFetch<LoginResponseDTO>("/v1/auth/refresh", {
+  return apiFetch<ApiResponse<LoginResponseDTO>>("/v1/auth/refresh", {
     method: "POST",
   });
 }
