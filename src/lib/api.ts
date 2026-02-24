@@ -1,14 +1,22 @@
 export async function apiFetch<T>(
     endpoint: string,
-    options?: RequestInit
+    options?: RequestInit,
+    accessToken?: string
 ): Promise<T> {
     const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        ...(options?.headers as Record<string, string> || {}),
+    };
+
+    if (accessToken) {
+        headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+
     const response = await fetch(`${API_URL}${endpoint}`, {
-        headers: {
-            "Content-Type": "application/json",
-            ...(options?.headers || {}),
-        },
+        credentials: "include",
+        headers,
         ...options,
     });
 

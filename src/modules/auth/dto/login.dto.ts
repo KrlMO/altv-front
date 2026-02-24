@@ -6,11 +6,17 @@ export interface LoginDTO {
 export interface UserResponseDTO {
     id: number;
     nickname: string;
-    provider_uid: string;
+    auth: AuthResponseDTO[];
     profile_photo: string;
 }
 
 export interface LoginResponseDTO {
     access_token: string;
     user: UserResponseDTO;
+}
+
+export interface AuthResponseDTO {
+    provider_uid: string;
+    provider: string;
+    id: number;
 }

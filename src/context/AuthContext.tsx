@@ -8,7 +8,7 @@ import {
     ReactNode,
 } from "react";
 
-import { loginRequest, refreshRequest } from "@/modules/auth/services/auth.service";
+import { loginRequest, refreshRequest, logoutRequest } from "@/modules/auth/services/auth.service";
 import { LoginDTO } from "@/modules/auth/dto/login.dto";
 import { User } from "@/types/user";
 
@@ -33,11 +33,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
             setLoading(true);
             setError(null);
-
+            debugger
             const result = await loginRequest(data);
-
-            setUser(result.user);
-            setAccessToken(result.access_token);
+            setUser(result.data.user);
+            setAccessToken(result.data.access_token);
             return true;
         } catch (err: any) {
             switch (err.status) {
@@ -66,19 +65,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    useEffect(() => {
+        console.log("AuthProvider mounted");
+    }, []);
 
-    const logout = () => {
-        setUser(null);
-        setAccessToken(null);
+    const logout = async () => {
+        try {
+            //
+            await logoutRequest();
+        } catch (err) {
+            console.error("Error during logout:", err);
+        } finally {
+            setUser(null);
+            setAccessToken(null);
+        }
     };
 
 
     useEffect(() => {
         const initAuth = async () => {
             try {
+                debugger
                 const response = await refreshRequest();
-                setUser(response.user);
-                setAccessToken(response.access_token);
+                setUser(response.data.user);
+                setAccessToken(response.data.access_token);
             } catch {
                 setUser(null);
                 setAccessToken(null);
