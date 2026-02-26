@@ -10,7 +10,7 @@ export async function loginRequest(data: LoginDTO) {
 }
 
 export async function registerRequest(data: any) {
-  debugger
+  //
   return apiFetch("/v1/users/register/local", {
     method: "POST",
     body: JSON.stringify(data),

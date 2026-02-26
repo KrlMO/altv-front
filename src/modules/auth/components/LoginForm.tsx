@@ -1,13 +1,13 @@
 "use client";
-import { MainButton } from "@/components/ui/buttom/MainButtom";
-import { ImageButton } from "@/components/ui/buttom/ImageButtom";
+import { MainButton } from "@/components/ui/buttom/MainButton";
+import { ImageButton } from "@/components/ui/buttom/ImageButton";
 import { Input } from "@/components/ui/input/Input";
 import steamImage from "../../../../public/steam-logo.png"
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import altv_logo from "../../../../public/altv-logo.svg"
-import { AltvButton } from "@/components/ui/buttom/AltvButtom";
+import { AltvButton } from "@/components/ui/buttom/AltvButton";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
