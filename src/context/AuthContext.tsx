@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
             setLoading(true);
             setError(null);
-            debugger
+            //
             const result = await loginRequest(data);
             setUser(result.data.user);
             setAccessToken(result.data.access_token);
@@ -85,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const initAuth = async () => {
             try {
-                debugger
+                //
                 const response = await refreshRequest();
                 setUser(response.data.user);
                 setAccessToken(response.data.access_token);

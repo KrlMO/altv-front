@@ -3,7 +3,7 @@ import { NavItem } from "../navigation/NavItem";
 import { SearchBar } from "../navigation/SearchBar";
 import { AuthSection } from "../navigation/AuthSection";
 import { HamburgerButton } from "../ui/buttom/HamburgerButton";
-import { AltvButton } from "../ui/buttom/AltvButtom";
+import { AltvButton } from "../ui/buttom/AltvButton";
 import { SearchButton } from "../ui/buttom/SearchButton";
 import { useEffect, useState } from "react";
 

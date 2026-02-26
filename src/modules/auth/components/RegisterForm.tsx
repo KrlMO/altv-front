@@ -5,13 +5,10 @@ import { InputDate } from "@/components/ui/input/InputDate";
 import { SelectCountry } from "@/modules/shared/country/components/SelectCountry";
 import { useRegister } from "../hooks/useRegister";
 import React from "react";
-import { MainButton } from "@/components/ui/buttom/MainButtom";
-import { ImageButton } from "@/components/ui/buttom/ImageButtom";
+import { MainButton } from "@/components/ui/buttom/MainButton";
+import { ImageButton } from "@/components/ui/buttom/ImageButton";
 import steamImage from "../../../../public/steam-logo.png"
-import Link from "next/link";
-import Image from "next/image";
-import altv_logo from "../../../../public/altv-logo.svg"
-import { AltvButton } from "@/components/ui/buttom/AltvButtom";
+import { AltvButton } from "@/components/ui/buttom/AltvButton";
 import { useRouter } from "next/navigation";
 
 export function RegisterForm() {
@@ -65,7 +62,7 @@ export function RegisterForm() {
         if (!success) {
             setFormError("Error al registrar el usuario.");
         }else{
-            router.push("/");
+            router.push("/auth/verify-email?email=" + encodeURIComponent(form.email));
         }
     };
 
