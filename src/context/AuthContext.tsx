@@ -31,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const login = async (data: LoginDTO): Promise<boolean> => {
         try {
+            debugger
             setLoading(true);
             setError(null);
             //
@@ -47,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     setError("Credenciales incorrectas");
                     break;
                 case 403:
-                    setError("No tienes permiso para acceder");
+                    setError("No tienes permiso para acceder, email no verificado");
                     break;
                 case 404:
                     setError("Usuario no encontrado");
