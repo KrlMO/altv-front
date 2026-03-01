@@ -23,6 +23,12 @@ export function VerifyEmailCard({ email, seconds: initialSeconds }: { email?: st
     const [seconds, setSeconds] = useState(initialSeconds || 90);
 
     useEffect(() => {
+        if (initialSeconds !== undefined) {
+            setSeconds(initialSeconds);
+        }
+    }, [initialSeconds]);
+
+    useEffect(() => {
         if (seconds <= 0) return;
 
         const timer = setInterval(() => {

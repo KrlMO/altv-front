@@ -1,24 +1,30 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { verifyEmailRequest } from "../services/auth.service";
-import { VerifyEmailResponseDTO } from "../dto/verifyEmail.dto";
+import { ApiException } from "@/types/api";
 
 export function useVerifyEmail() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const verifyEmail = async (email: string): Promise<VerifyEmailResponseDTO> => {
+    const verifyEmail = useCallback(async (email: string) => {
         try {
             setLoading(true);
             setError(null);
+
             const response = await verifyEmailRequest(email);
             return response.data;
-        } catch (err: any) {
-            setError(err.message || "Error inesperado");
+
+        } catch (err) {
+            if (err instanceof ApiException) {
+                setError(err.message);
+            } else {
+                setError("Error inesperado");
+            }
             throw err;
         } finally {
             setLoading(false);
         }
-    }
+    }, []);
 
     return { verifyEmail, loading, error };
 }

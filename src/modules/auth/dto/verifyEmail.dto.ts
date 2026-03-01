@@ -1,5 +1,4 @@
 export interface VerifyEmailResponseDTO {
-    time_left: number;
-    already_verified: boolean;
-    email_exists: boolean;
+    resend_cooldown: number;
+    status: "VERIFIED" | "PENDING" | "EXPIRED" | "NOT_FOUND";
 }

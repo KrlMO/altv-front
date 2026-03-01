@@ -2,6 +2,7 @@ import { apiFetch } from "@/lib/api";
 import { LoginDTO, LoginResponseDTO } from "../dto/login.dto";
 import { VerifyEmailResponseDTO } from "../dto/verifyEmail.dto";
 import { SuccessResponse } from "@/types/api";
+import { RegisterRequestDTO } from "../dto/register.dto";
 
 export async function loginRequest(data: LoginDTO) {
   return apiFetch<SuccessResponse<LoginResponseDTO>>("/v1/auth/login/local", {
@@ -10,8 +11,8 @@ export async function loginRequest(data: LoginDTO) {
   });
 }
 
-export async function registerRequest(data: any) {
-  return apiFetch("/v1/users/register/local", {
+export async function registerRequest(data: RegisterRequestDTO) {
+  return apiFetch("/v1/auth/register/local", {
     method: "POST",
     body: JSON.stringify(data),
   });

@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { VerifyEmailCard } from "../components/VerifyEmailCard";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useVerifyEmail } from "../hooks/useVerifyEmail";
 
 export function VerifyEmailPage() {
@@ -10,32 +10,49 @@ export function VerifyEmailPage() {
     const searchParams = useSearchParams();
     const email = searchParams.get("email");
     const [seconds, setSeconds] = useState(90);
+    const hasRun = useRef(false);
 
     const { verifyEmail } = useVerifyEmail();
     const [isValid, setIsValid] = useState<boolean | null>(null);
-
+    console.log("VerifyEmailPage render");
     useEffect(() => {
         if (!email) {
             router.replace("/auth/login");
             return;
         }
-
+        if (hasRun.current) return;
         const check = async () => {
-            const response = await verifyEmail(email);
-            if (response.email_exists) {
-                if (response.already_verified) {
+            try {
+                const response = await verifyEmail(email);
+
+                if (response.status === "VERIFIED") {
                     router.replace("/auth/login?verified=true");
-                } else {
-                    setIsValid(true);
-                    setSeconds(response.time_left);
+                    return;
                 }
-            }else{
-                router.replace("/auth/login?email_not_found=true");
+
+                if (response.status === "NOT_FOUND") {
+                    router.replace("/auth/login");
+                    return;
+                }
+
+                if (response.status === "EXPIRED") {
+                    setSeconds(0);
+                }
+
+                if (response.status === "PENDING") {
+                    setSeconds(response.resend_cooldown??0);
+                }
+
+                setIsValid(true);
+
+            } catch (error) {
+                router.replace("/auth/login");
+                setIsValid(false);
             }
         };
-
+        hasRun.current = true;
         check();
-    }, [email, router, verifyEmail]);
+    }, [email]);
 
     if (isValid === null) {
         return <div className="text-center mt-20">Validando...</div>;

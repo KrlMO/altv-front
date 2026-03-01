@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
+    const [initialized, setInitialized] = useState(false);
     const login = async (data: LoginDTO): Promise<boolean> => {
         try {
             debugger
@@ -67,6 +67,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     useEffect(() => {
+        const initAuth = async () => {
+            try {
+                const response = await refreshRequest();
+                setUser(response.data.user);
+                setAccessToken(response.data.access_token);
+            } catch {
+                setUser(null);
+                setAccessToken(null);
+            } finally {
+                setInitialized(true);
+            }
+        };
+
+        initAuth();
+    }, []);
+
+    useEffect(() => {
         console.log("AuthProvider mounted");
     }, []);
 
@@ -81,23 +98,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setAccessToken(null);
         }
     };
-
-
-    useEffect(() => {
-        const initAuth = async () => {
-            try {
-                //
-                const response = await refreshRequest();
-                setUser(response.data.user);
-                setAccessToken(response.data.access_token);
-            } catch {
-                setUser(null);
-                setAccessToken(null);
-            }
-        };
-
-        initAuth();
-    }, []);
 
     return (
         <AuthContext.Provider
