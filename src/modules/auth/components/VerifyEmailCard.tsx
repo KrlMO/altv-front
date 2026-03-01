@@ -2,34 +2,50 @@
 import { AltvButton } from "@/components/ui/buttom/AltvButton";
 import { MainButton } from "@/components/ui/buttom/MainButton";
 import { SecondaryButton } from "@/components/ui/buttom/SecondaryButton";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export function VerifyEmailCard() {
-    const [seconds, setSeconds] = useState(90);
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const email = searchParams.get("email");
+function maskEmail(email: string): string {
+    const [name, domain] = email.split("@");
+
+    if (!name || !domain) return email;
+
+    if (name.length <= 2) {
+        return name + "@" + domain;
+    }
+
+    const visible = name.slice(0, 2);
+    const masked = "*".repeat(name.length - 2);
+
+    return `${visible}${masked}@${domain}`;
+}
+
+export function VerifyEmailCard({ email, seconds: initialSeconds }: { email?: string, seconds?: number }) {
+    const [seconds, setSeconds] = useState(initialSeconds || 90);
 
     useEffect(() => {
+        if (initialSeconds !== undefined) {
+            setSeconds(initialSeconds);
+        }
+    }, [initialSeconds]);
 
+    useEffect(() => {
         if (seconds <= 0) return;
+
         const timer = setInterval(() => {
             setSeconds((prev) => prev - 1);
         }, 1000);
 
         return () => clearInterval(timer);
     }, [seconds]);
-    useEffect(() => {
-        if (!email) {
-            router.replace("/auth/login");
-        }
-    }, [email]);
+
+    const maskedEmail = email ? maskEmail(email) : "";
+
     const formatTime = (s: number) => {
         const m = Math.floor(s / 60);
         const sec = s % 60;
         return `${m}:${sec.toString().padStart(2, "0")}`;
     };
+
     return (
         <>
             <div
@@ -77,7 +93,7 @@ export function VerifyEmailCard() {
                 </h2>
 
                 <p className="text-justify text-zinc-600 dark:text-zinc-400">
-                    Hemos enviado un correo electrónico a tu dirección de correo electrónico registrada. Por favor, revisa tu bandeja de entrada y haz clic en el enlace de verificación para completar el proceso de registro.
+                    Hemos enviado un correo electrónico a {maskedEmail}. Por favor, revisa tu bandeja de entrada y haz clic en el enlace de verificación para completar el proceso de registro.
                 </p>
                 <p className="text-justify text-zinc-600 dark:text-zinc-400">
                     Si no has recibido el correo electrónico, asegúrate de revisar tu carpeta de spam o correo no deseado. Si aún no lo encuentras, puedes solicitar que se reenvíe el correo de verificación.

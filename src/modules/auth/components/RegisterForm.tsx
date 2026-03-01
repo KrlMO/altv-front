@@ -62,7 +62,7 @@ export function RegisterForm() {
         if (!success) {
             setFormError("Error al registrar el usuario.");
         }else{
-            router.push("/auth/verify-email?email=" + encodeURIComponent(form.email));
+            router.push(`/auth/verify-email?email=${encodeURIComponent(form.email)}`);
         }
     };
 

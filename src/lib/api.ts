@@ -1,8 +1,11 @@
+import { ApiException } from "@/types/api";
+
 export async function apiFetch<T>(
     endpoint: string,
     options?: RequestInit,
     accessToken?: string
 ): Promise<T> {
+
     const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
     const headers: Record<string, string> = {
@@ -19,13 +22,14 @@ export async function apiFetch<T>(
         headers,
         ...options,
     });
-
     const data = await response.json().catch(() => null);
 
     if (!response.ok) {
-        const error = new Error(data?.message || "API error") as any;
-        error.status = response.status;
-        throw error;
+        throw new ApiException(
+            data?.message || "API error",
+            response.status,
+            data?.code
+        );
     }
 
     return data as T;
