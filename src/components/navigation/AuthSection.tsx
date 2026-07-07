@@ -35,15 +35,17 @@ export function AuthSection() {
     if (!user) {
         return (
             <div className="flex items-center gap-2">
-                <UserIcon
-                    strokeWidth={1.4}
-                    className="h-6 w-6 text-gray-700 dark:text-ciangreen"
-                />
                 <Link
                     href="/auth/login"
-                    className="px-4 py-2 rounded-full bg-btn-primary text-white hover:opacity-90 transition"
+                    className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-gray-100 dark:hover:bg-altv-darksecondary transition"
                 >
-                    Iniciar sesión
+                    <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-altv-darksecondary flex items-center justify-center">
+                        <UserIcon
+                            strokeWidth={1.4}
+                            className="h-5 w-5 text-gray-600 dark:text-gray-300"
+                        />
+                    </div>
+                    <span className="text-sm font-medium hidden sm:inline">Iniciar sesión</span>
                 </Link>
             </div>
         );

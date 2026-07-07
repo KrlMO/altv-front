@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { VerifyEmailCard } from "../components/VerifyEmailCard";
 import { useEffect, useRef, useState } from "react";
-import { useVerifyEmail } from "../hooks/useVerifyEmail";
+import { useCheckEmailVerification } from "../hooks/useCheckEmailVerification";
 
 export function VerifyEmailPage() {
     const router = useRouter();
@@ -12,9 +12,9 @@ export function VerifyEmailPage() {
     const [seconds, setSeconds] = useState(90);
     const hasRun = useRef(false);
 
-    const { verifyEmail } = useVerifyEmail();
+    const { checkEmailVerification } = useCheckEmailVerification();
     const [isValid, setIsValid] = useState<boolean | null>(null);
-    console.log("VerifyEmailPage render");
+    
     useEffect(() => {
         if (!email) {
             router.replace("/auth/login");
@@ -23,7 +23,7 @@ export function VerifyEmailPage() {
         if (hasRun.current) return;
         const check = async () => {
             try {
-                const response = await verifyEmail(email);
+                const response = await checkEmailVerification(email);
 
                 if (response.status === "VERIFIED") {
                     router.replace("/auth/login?verified=true");

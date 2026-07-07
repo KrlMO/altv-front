@@ -31,7 +31,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [initialized, setInitialized] = useState(false);
     const login = async (data: LoginDTO): Promise<boolean> => {
         try {
-            debugger
             setLoading(true);
             setError(null);
             //
