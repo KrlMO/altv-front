@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SearchBar } from "@/components/navigation/SearchBar";
-import { useGames } from "../hooks/useGames";
+import { useGames } from "../../hooks/useGames";
 import { GameOption } from "./GameOption";
 
 interface FilterByGameProps {

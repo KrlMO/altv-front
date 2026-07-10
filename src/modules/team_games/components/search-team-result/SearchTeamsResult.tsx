@@ -5,7 +5,7 @@ import { SelectCountry } from "@/modules/shared/country/components/SelectCountry
 import { SelectRegion } from "@/modules/shared/region/components/SelectRegion";
 import { Pagination } from "@/components/ui/pagination/Pagination";
 import { MainButton } from "@/components/ui/buttom/MainButton";
-import { useTeamGames } from "../hooks/useTeamGames";
+import { useTeamGames } from "../../hooks/useTeamGames";
 import { TeamResult } from "./TeamResult";
 
 interface SearchTeamResultProps {
@@ -37,7 +37,7 @@ export function SearchTeamResult({ gameId, gameName }: SearchTeamResultProps) {
                         <span className="text-btn-secondary">{gameName}</span>
                     </h2>
                 )}
-                <MainButton type="button" className="px-6 shrink-0">
+                <MainButton type="button" className="px-6 shrink-0" onClick={() => window.location.href = "/app/teams/manage"}>
                     Crear Equipo
                 </MainButton>
             </div>

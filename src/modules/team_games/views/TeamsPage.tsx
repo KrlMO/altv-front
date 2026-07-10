@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { FilterByGame } from "../components/FilterByGame";
-import { SearchTeamResult } from "../components/SearchTeamsResult";
+import { SearchTeamResult } from "../components/search-team-result/SearchTeamsResult";
+import { FilterByGame } from "../components/filter-by-game/FilterByGame";
 
 export function TeamsPage() {
     const [gameId, setGameId] = useState<number | null>(null);

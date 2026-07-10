@@ -30,11 +30,11 @@ export function Navbar() {
 
                     <div className="hidden lg:flex gap-6">
                         <NavItem href="/">Inicio</NavItem>
-                        <NavItem href="/tournaments">Torneos</NavItem>
-                        <NavItem href="/teams">Equipos</NavItem>
-                        <NavItem href="/ranking">Ranking</NavItem>
-                        <NavItem href="/news">Noticias</NavItem>
-                        <NavItem href="/about">Acerca de</NavItem>
+                        <NavItem href="/app/tournaments">Torneos</NavItem>
+                        <NavItem href="/app/teams">Equipos</NavItem>
+                        <NavItem href="/app/ranking">Ranking</NavItem>
+                        <NavItem href="/app/news">Noticias</NavItem>
+                        <NavItem href="/app/about">Acerca de</NavItem>
                     </div>
                 </div>
 
@@ -64,12 +64,12 @@ export function Navbar() {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex flex-col gap-4">
-                            <NavItem href="/">Inicio</NavItem>
-                            <NavItem href="/tournaments">Torneos</NavItem>
-                            <NavItem href="/teams">Equipos</NavItem>
-                            <NavItem href="/ranking">Ranking</NavItem>
-                            <NavItem href="/news">Noticias</NavItem>
-                            <NavItem href="/about">Acerca de</NavItem>
+                            <NavItem href="/app">Inicio</NavItem>
+                            <NavItem href="/app/tournaments">Torneos</NavItem>
+                            <NavItem href="/app/teams">Equipos</NavItem>
+                            <NavItem href="/app/ranking">Ranking</NavItem>
+                            <NavItem href="/app/news">Noticias</NavItem>
+                            <NavItem href="/app/about">Acerca de</NavItem>
                         </div>
                     </div>
                 </div>
