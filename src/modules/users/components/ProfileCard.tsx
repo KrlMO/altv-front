@@ -9,18 +9,14 @@ type Props = {
 
 export function ProfileCard({ user }: Props) {
     return (
-        <>
-            <div>
-                <div>
-                    <ProfileBanner banner={user?.banner_photo==="" ? "/default-banner.jpg" : user?.banner_photo ?? "/default-banner.jpg"} />
-                </div>
-                <div>
-                    <ProfileAvatar photo={user?.profile_photo==="" ? "/default-profile.jpg" : user?.profile_photo ?? "/default-profile.jpg"} />
-                </div>
-            </div>
-            <div>
-                <ProfileInfo user={user} />
-            </div>
-        </>
+        <div className="w-full max-w-4xl mx-auto bg-white dark:bg-altv-maindark rounded-xl shadow-lg overflow-hidden">
+            <ProfileBanner
+                banner={user.banner_photo || "/default-banner.jpg"}
+            />
+            <ProfileAvatar
+                photo={user.profile_photo || "/default-profile.jpg"}
+            />
+            <ProfileInfo user={user} />
+        </div>
     );
 }

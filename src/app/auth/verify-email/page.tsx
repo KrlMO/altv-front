@@ -1,2 +1,2 @@
-import { VerifyEmailPage } from "@/modules/auth/pages/VerifyEmailPage";
+import { VerifyEmailPage } from "@/modules/auth/views/VerifyEmailPage";
 export default VerifyEmailPage;

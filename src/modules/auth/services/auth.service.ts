@@ -30,8 +30,15 @@ export async function logoutRequest() {
   });
 }
 
-export async function verifyEmailRequest(email: string) {
-  return apiFetch<SuccessResponse<VerifyEmailResponseDTO>>("/v1/auth/verify-email", {
+export async function checkEmailVerificationRequest(email: string) {
+  return apiFetch<SuccessResponse<VerifyEmailResponseDTO>>("/v1/auth/verify-email-verification", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function resendVerificationRequest(email: string) {
+  return apiFetch("/v1/auth/resend-verification", {
     method: "POST",
     body: JSON.stringify({ email }),
   });
