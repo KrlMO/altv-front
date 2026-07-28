@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Country, fetchCountries } from "../services/country.service";
+import { Country, getCachedCountries } from "../services/country.service";
 
 export function useCountries() {
     const [countries, setCountries] = useState<Country[]>([]);
@@ -7,7 +7,7 @@ export function useCountries() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        fetchCountries()
+        getCachedCountries()
             .then(setCountries)
             .catch(() => setError("Error al cargar países"))
             .finally(() => setLoading(false));

@@ -5,7 +5,7 @@ import { useCountries } from "../hooks/useCountries";
 interface SelectCountryProps {
     label: string;
     value?: number;
-    onChange?: (value: number | undefined) => void;
+    onChange?: (value: number | undefined, name?: string, isoCode?: string) => void;
     error?: string;
 }
 
@@ -28,7 +28,13 @@ export function SelectCountry({
                 value={value ?? ""}
                 onChange={(e) => {
                     const val = e.target.value;
-                    onChange?.(val ? Number(val) : undefined);
+                    if (val) {
+                        const id = Number(val);
+                        const country = countries.find((c) => c.id === id);
+                        onChange?.(id, country?.name, country?.isoCode);
+                    } else {
+                        onChange?.(undefined);
+                    }
                 }}
                 disabled={loading}
                 className={`w-full h-10 rounded-lg border px-3 text-sm
@@ -48,10 +54,10 @@ export function SelectCountry({
                     </option>
                 ))}
             </select>
-            {selectedCountry && selectedCountry.flag_path && (
+            {selectedCountry && selectedCountry.flagPath && (
                 <div className="mt-2 flex items-center gap-2">
                     <img
-                        src={selectedCountry.flag_path}
+                        src={selectedCountry.flagPath}
                         alt={selectedCountry.name}
                         className="h-5 w-7 object-cover rounded-sm"
                     />

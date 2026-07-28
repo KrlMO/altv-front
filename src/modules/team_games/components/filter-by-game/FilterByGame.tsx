@@ -43,7 +43,7 @@ export function FilterByGame({ onGameSelect }: FilterByGameProps) {
                         key={game.id}
                         id={game.id}
                         name={game.name}
-                        colorHex={game.color_hex}
+                        colorHex={game.colorHex}
                         isSelected={selectedId === game.id}
                         onSelect={handleSelect}
                     />

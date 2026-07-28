@@ -2,7 +2,11 @@
 
 import { useState, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Team, CreateTeamDTO, UpdateTeamDTO } from "../models/teams";
+import { Team } from "../models/teams";
+import {
+    CreateTeamRequestDTO,
+    UpdateTeamRequestDTO,
+} from "../dto/teams.dto";
 import {
     fetchTeamById,
     createTeam,
@@ -109,7 +113,7 @@ export function useTeamForm() {
             setSuccess(null);
 
             if (teamId && initialData) {
-                const dto: UpdateTeamDTO = {};
+                const dto: UpdateTeamRequestDTO = {};
                 if (formData.name !== initialData.name) dto.name = formData.name;
                 if (formData.tag !== initialData.tag) dto.tag = formData.tag;
                 if (formData.description !== initialData.description)
@@ -122,7 +126,7 @@ export function useTeamForm() {
                 await updateTeam(teamId, dto, accessToken ?? "");
                 setSuccess("Equipo actualizado correctamente");
             } else {
-                const dto: CreateTeamDTO = {
+                const dto: CreateTeamRequestDTO = {
                     name: formData.name,
                     tag: formData.tag,
                     description: formData.description,
@@ -162,3 +166,6 @@ export function useTeamForm() {
         submit,
     };
 }
+
+export type { TeamFormData };
+export { emptyForm };

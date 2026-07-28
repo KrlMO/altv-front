@@ -1,3 +1,5 @@
+import { TeamGame } from "@/modules/team_games/models/team-game.models";
+
 export interface Team {
     id: string;
     name: string;
@@ -5,8 +7,11 @@ export interface Team {
     description: string;
     country: string;
     country_id: number;
+    country_iso: string;
     logo: string;
     cover: string;
+    colorHex: string;
+    teamGames: TeamGame[];
 }
 
 export interface MyTeamListItem {
@@ -15,14 +20,3 @@ export interface MyTeamListItem {
     logo: string;
     member_role: string;
 }
-
-export interface CreateTeamDTO {
-    name: string;
-    tag: string;
-    description: string;
-    country_id: number;
-    logo?: File;
-    cover?: File;
-}
-
-export type UpdateTeamDTO = Partial<CreateTeamDTO>;

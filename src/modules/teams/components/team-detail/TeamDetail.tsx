@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { SelectCountry } from "@/modules/shared/country/components/SelectCountry";
-import { MainButton } from "@/components/ui/buttom/MainButton";
-import { useTeamForm } from "../../hooks/useTeamForm";
+import { useEffect } from "react";
+import { useTeamWizard } from "../../hooks/useTeamWizard";
+import { StepIndicator } from "./StepIndicator";
+import { TeamInfoStep } from "./TeamInfoStep";
+import { RosterStep } from "./RosterStep";
+import { SummaryStep } from "./SummaryStep";
 
 interface TeamDetailProps {
     teamId: string | null;
@@ -12,20 +14,25 @@ interface TeamDetailProps {
 
 export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
     const {
+        step,
         formData,
+        rosters,
         loading,
         submitting,
         error,
         success,
         isNew,
+        canProceedFromStep1,
         loadTeam,
         reset,
         updateField,
-        submit,
-    } = useTeamForm();
-
-    const logoInputRef = useRef<HTMLInputElement>(null);
-    const coverInputRef = useRef<HTMLInputElement>(null);
+        nextStep,
+        prevStep,
+        removeRoster,
+        updateRoster,
+        addRoster,
+        submitAll,
+    } = useTeamWizard(teamId);
 
     useEffect(() => {
         if (teamId) {
@@ -35,10 +42,9 @@ export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
         }
     }, [teamId, loadTeam, reset]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        await submit();
-        if (!error) onSaved?.();
+    const handleSubmit = async () => {
+        const result = await submitAll();
+        if (result) onSaved?.();
     };
 
     if (loading) {
@@ -50,131 +56,78 @@ export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                {isNew ? "Crear Equipo" : "Editar Equipo"}
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                        Logo del equipo
-                    </label>
-                    <input
-                        ref={logoInputRef}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) =>
-                            updateField("logo", e.target.files?.[0] ?? null)
-                        }
-                    />
-                    <button
-                        type="button"
-                        onClick={() => logoInputRef.current?.click()}
-                        className="w-full h-24 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-sm text-zinc-500 hover:border-[#88008B] hover:text-[#88008B] transition-colors"
-                    >
-                        {formData.logo
-                            ? formData.logo.name
-                            : "Subir logo"}
-                    </button>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                        Portada del equipo
-                    </label>
-                    <input
-                        ref={coverInputRef}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) =>
-                            updateField("cover", e.target.files?.[0] ?? null)
-                        }
-                    />
-                    <button
-                        type="button"
-                        onClick={() => coverInputRef.current?.click()}
-                        className="w-full h-24 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-sm text-zinc-500 hover:border-[#88008B] hover:text-[#88008B] transition-colors"
-                    >
-                        {formData.cover
-                            ? formData.cover.name
-                            : "Subir portada"}
-                    </button>
-                </div>
-            </div>
-
-            <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    Nombre del equipo *
-                </label>
-                <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => updateField("name", e.target.value)}
-                    required
-                    placeholder="Nombre del equipo"
-                    className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-            </div>
-
-            <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    Tag *
-                </label>
-                <input
-                    type="text"
-                    value={formData.tag}
-                    onChange={(e) => updateField("tag", e.target.value)}
-                    required
-                    placeholder="TAG"
-                    maxLength={10}
-                    className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-            </div>
-
-            <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    Descripción
-                </label>
-                <textarea
-                    value={formData.description}
-                    onChange={(e) =>
-                        updateField("description", e.target.value)
-                    }
-                    placeholder="Describe tu equipo..."
-                    rows={4}
-                    className="w-full rounded-lg border px-3 py-2 text-sm bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                />
-            </div>
-
-            <SelectCountry
-                label="País *"
-                value={formData.country_id}
-                onChange={(val) => updateField("country_id", val)}
+        <div className="flex flex-col gap-6">
+            <StepIndicator
+                currentStep={step}
+                steps={[
+                    { label: "Datos", step: 1 },
+                    { label: "Roster", step: 2 },
+                    { label: "Resumen", step: 3 },
+                    { label: "Guardar", step: 4 },
+                ]}
             />
 
-            {error && <p className="text-sm text-red-400">{error}</p>}
-            {success && <p className="text-sm text-green-400">{success}</p>}
+            {step === 1 && (
+                <TeamInfoStep
+                    formData={formData}
+                    isNew={isNew}
+                    canProceed={canProceedFromStep1}
+                    onUpdateField={updateField}
+                    onNext={nextStep}
+                />
+            )}
 
-            <div className="flex gap-3">
-                <MainButton type="submit" disabled={submitting}>
-                    {submitting
-                        ? "Guardando..."
-                        : isNew
-                          ? "Crear Equipo"
-                          : "Guardar Cambios"}
-                </MainButton>
-                <MainButton
-                    type="button"
-                    variant="secondary"
-                    onClick={reset}
-                    disabled={submitting}
-                >
-                    Cancelar
-                </MainButton>
-            </div>
-        </form>
+            {step === 2 && (
+                <RosterStep
+                    rosters={rosters}
+                    onAddRoster={addRoster}
+                    onUpdateRoster={updateRoster}
+                    onRemoveRoster={removeRoster}
+                    onPrev={prevStep}
+                    onNext={nextStep}
+                />
+            )}
+
+            {step === 3 && (
+                <SummaryStep
+                    formData={formData}
+                    rosters={rosters}
+                    isNew={isNew}
+                    submitting={submitting}
+                    onPrev={prevStep}
+                    onsubmit={handleSubmit}
+                />
+            )}
+
+            {step === 4 && (
+                <div className="flex flex-col items-center justify-center h-64 gap-4">
+                    {submitting ? (
+                        <p className="text-sm text-zinc-400">Guardando...</p>
+                    ) : success ? (
+                        <>
+                            <p className="text-sm text-green-400">{success}</p>
+                            <button
+                                type="button"
+                                onClick={reset}
+                                className="text-sm text-[#88008B] hover:underline"
+                            >
+                                Crear otro equipo
+                            </button>
+                        </>
+                    ) : error ? (
+                        <>
+                            <p className="text-sm text-red-400">{error}</p>
+                            <button
+                                type="button"
+                                onClick={prevStep}
+                                className="text-sm text-[#88008B] hover:underline"
+                            >
+                                Volver
+                            </button>
+                        </>
+                    ) : null}
+                </div>
+            )}
+        </div>
     );
 }
