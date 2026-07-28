@@ -15,7 +15,7 @@ export function NavItem({ href, children }: NavItemProps) {
   return (
     <Link
       href={href}
-      className={`relative px-1 py-2 transition-all duration-200 text-gray-600 dark:text-gray-300
+      className={`relative px-1 py-2 transition-all duration-200 text-xs sm:text-sm lg:text-base text-gray-600 dark:text-gray-300
         ${isActive 
           ? "text-btn-secondary font-semibold" 
           : "hover:drop-shadow-[0_0_6px_rgba(21,255,235,0.5)]"

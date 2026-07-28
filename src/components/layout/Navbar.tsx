@@ -16,30 +16,30 @@ export function Navbar() {
     return (
         <>
             <nav className="w-full h-16 px-4 flex items-center justify-between bg-white dark:bg-altv-maindark relative navbar-elevated">
-                <div className="flex items-center gap-10">
-                    <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 md:gap-6 lg:gap-10">
+                    <div className="flex items-center gap-3 lg:gap-4">
                         <HamburgerButton
                             onClick={() => {
                                 setIsMenuOpen(prev => !prev);
                                 setIsSearchOpen(false);
                             }}
-                            className="lg:hidden"
+                            className="sm:hidden"
                         />
                         <AltvButton height={70}></AltvButton>
                     </div>
 
-                    <div className="hidden lg:flex gap-6">
+                    <div className="hidden sm:flex gap-2 md:gap-4 lg:gap-6">
                         <NavItem href="/">Inicio</NavItem>
                         <NavItem href="/app/tournaments">Torneos</NavItem>
                         <NavItem href="/app/teams">Equipos</NavItem>
                         <NavItem href="/app/ranking">Ranking</NavItem>
                         <NavItem href="/app/news">Noticias</NavItem>
-                        <NavItem href="/app/about">Acerca de</NavItem>
+                        <NavItem href="/app/about">Nosotros</NavItem>
                     </div>
                 </div>
 
-                <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2">
-                    <SearchBar className="w-140" />
+                <div className="hidden md:flex items-center">
+                    <SearchBar className="w-40 lg:w-80 xl:w-130" />
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -48,7 +48,7 @@ export function Navbar() {
                             setIsSearchOpen(prev => !prev);
                             setIsMenuOpen(false);
                         }}
-                        className="lg:hidden"
+                        className="md:hidden"
                     />
                     <AuthSection />
                 </div>
@@ -69,7 +69,7 @@ export function Navbar() {
                             <NavItem href="/app/teams">Equipos</NavItem>
                             <NavItem href="/app/ranking">Ranking</NavItem>
                             <NavItem href="/app/news">Noticias</NavItem>
-                            <NavItem href="/app/about">Acerca de</NavItem>
+                            <NavItem href="/app/about">Nosotros</NavItem>
                         </div>
                     </div>
                 </div>

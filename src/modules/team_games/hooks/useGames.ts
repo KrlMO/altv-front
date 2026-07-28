@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Game } from "../dto/game.dto";
+import { Game } from "../models/game.models";
 import { searchGames } from "../services/games.service";
 
 export function useGames(debounceMs = 300) {

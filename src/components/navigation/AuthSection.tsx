@@ -79,7 +79,7 @@ export function AuthSection() {
             {open && (
                 <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-altv-maindark shadow-xl rounded-xl p-2 border border-gray-100 dark:border-altv-darksecondary">
                     <Link
-                        href="/profile"
+                        href="/app/profile"
                         className="block px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-altv-darksecondary transition"
                     >
                         Mi cuenta

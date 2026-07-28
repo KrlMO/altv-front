@@ -1,15 +1,23 @@
 import { apiFetch } from "@/lib/api";
+import { Country } from "../models/country.models";
+import { CountryResponseDTO } from "../dto/country.dto";
+import { mapCountryResponseToModel } from "../mappers/country.mapper";
 
-export interface Country {
-  id: number;
-  name: string;
-  iso_code: string;
-  flag_path: string;
-}
+let countriesCache: Country[] | null = null;
 
 export async function fetchCountries(): Promise<Country[]> {
-  return apiFetch<Country[]>("/v1/countries/",{
-        method: "GET"
-    }
-  );
+    const response = await apiFetch<CountryResponseDTO[]>("/v1/countries/", {
+        method: "GET",
+    });
+    return response.map(mapCountryResponseToModel);
+}
+
+export async function getCachedCountries(): Promise<Country[]> {
+    if (countriesCache) return countriesCache;
+    countriesCache = await fetchCountries();
+    return countriesCache;
+}
+
+export function clearCountriesCache(): void {
+    countriesCache = null;
 }
