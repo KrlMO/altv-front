@@ -5,6 +5,14 @@ export interface TeamGame {
     game_id: number;
 }
 
+export interface TeamGameItemDTO {
+    id: string;
+    game_id: string;
+    game_name: string;
+    logo?: string | null;
+    created_at?: string;
+}
+
 export interface TeamGameFilters {
     name?: string;
     region_id?: number;

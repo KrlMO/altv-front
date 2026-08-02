@@ -1,6 +1,49 @@
 import { apiFetch } from "@/lib/api";
 import { SuccessResponse } from "@/types/api";
-import { PaginatedTeamGames, TeamGameFilters } from "../dto/team-game.dto";
+import {
+    PaginatedTeamGames,
+    TeamGameFilters,
+    TeamGameItemDTO,
+} from "../dto/team-game.dto";
+import { TeamGameItem } from "../models/team-game.models";
+import { mapTeamGameItemResponseToModel } from "../mappers/team-game.mapper";
+
+export interface CreateTeamGamePayload {
+    game_slug: string;
+    name: string;
+}
+
+export async function fetchTeamGamesByTeam(
+    teamId: string,
+    token: string
+): Promise<TeamGameItem[]> {
+    const response = await apiFetch<SuccessResponse<TeamGameItemDTO[]>>(
+        `/v1/teams/${teamId}/team-games`,
+        { method: "GET" },
+        token
+    );
+    return (response.data ?? []).map(mapTeamGameItemResponseToModel);
+}
+
+export async function createTeamGame(
+    teamId: string,
+    data: CreateTeamGamePayload,
+    token: string
+): Promise<void> {
+    await apiFetch(`/v1/teams/${teamId}/games`, {
+        method: "POST",
+        body: JSON.stringify(data),
+    }, token);
+}
+
+export async function deleteTeamGame(
+    teamGameId: string,
+    token: string
+): Promise<void> {
+    await apiFetch(`/v1/team-games/${teamGameId}`, {
+        method: "DELETE",
+    }, token);
+}
 
 export async function fetchTeamGames(
     filters: TeamGameFilters

@@ -7,16 +7,18 @@ import { useGames } from "@/modules/team_games/hooks/useGames";
 import { usePlayerSearch } from "@/modules/users/hooks/usePlayerSearch";
 import { Game } from "@/modules/team_games/models/game.models";
 import { PlayerSearchResult } from "@/modules/users/models/users.models";
-import { RosterEntry, RosterPlayer, TeamRole } from "../../hooks/useTeamWizard";
+import { RosterEntry, RosterPlayer, TeamRole } from "../../types/roster";
 
 type SearchSection = "players" | "coach" | "others";
 
 interface AddRosterModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (entry: RosterEntry, index?: number) => void;
-    existingGameIds: string[];
+    onSave?: (entry: RosterEntry, index?: number) => void;
+    existingGameIds?: string[];
     editingEntry?: { index: number; entry: RosterEntry };
+    gameOnly?: boolean;
+    onSelectGame?: (game: Game) => void;
 }
 
 function calculateAge(birthDate: string): number {
@@ -34,8 +36,10 @@ export function AddRosterModal({
     isOpen,
     onClose,
     onSave,
-    existingGameIds,
+    existingGameIds = [],
     editingEntry,
+    gameOnly = false,
+    onSelectGame,
 }: AddRosterModalProps) {
     const {
         query: gameQuery,
@@ -56,6 +60,7 @@ export function AddRosterModal({
               id: Number(editingEntry.entry.gameId),
               name: editingEntry.entry.gameName,
               colorHex: "",
+              slug: "",
           }
         : null;
 
@@ -91,12 +96,11 @@ export function AddRosterModal({
     const hasCoach = coachList.length > 0;
 
     const canSave =
-        selectedGame !== null && !isDuplicate && playersList.length > 0;
+        selectedGame !== null && !isDuplicate && (gameOnly || playersList.length > 0);
 
     const handleSelectGame = (game: Game) => {
         setSelectedGame(game);
         setGameQuery(game.name);
-        setGames([]);
     };
 
     const handleSelectPlayer = (player: PlayerSearchResult) => {
@@ -168,13 +172,19 @@ export function AddRosterModal({
     };
 
     const handleSave = () => {
-        if (!selectedGame || isDuplicate || playersList.length === 0) return;
+        if (!selectedGame || isDuplicate) return;
+        if (gameOnly) {
+            onSelectGame?.(selectedGame);
+            resetAndClose();
+            return;
+        }
+        if (playersList.length === 0) return;
         const entry: RosterEntry = {
             gameName: selectedGame.name,
             gameId: String(selectedGame.id),
             players: rosterPlayers,
         };
-        onSave(entry, isEditing ? editingEntry.index : undefined);
+        onSave?.(entry, isEditing ? editingEntry.index : undefined);
         resetAndClose();
     };
 
@@ -195,7 +205,13 @@ export function AddRosterModal({
         <Modal
             isOpen={isOpen}
             onClose={resetAndClose}
-            title={isEditing ? "Editar Roster" : "Añadir Roster"}
+            title={
+                gameOnly
+                    ? "Añadir videojuego"
+                    : isEditing
+                      ? "Editar Roster"
+                      : "Añadir Roster"
+            }
             size="lg"
             footer={
                 <div className="flex justify-end gap-3">
@@ -255,6 +271,8 @@ export function AddRosterModal({
                     )}
                 </div>
 
+                {!gameOnly && (
+                    <>
                 <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                         <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
@@ -404,6 +422,8 @@ export function AddRosterModal({
                         </button>
                     )}
                 </div>
+                    </>
+                )}
             </div>
         </Modal>
     );

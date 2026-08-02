@@ -21,7 +21,7 @@ export function TeamInfoStep({
     onNext,
 }: TeamInfoStepProps) {
     const logoInputRef = useRef<HTMLInputElement>(null);
-    const coverInputRef = useRef<HTMLInputElement>(null);
+    const bannerInputRef = useRef<HTMLInputElement>(null);
 
     return (
         <div className="flex flex-col gap-6">
@@ -57,20 +57,20 @@ export function TeamInfoStep({
                         Portada del equipo
                     </label>
                     <input
-                        ref={coverInputRef}
+                        ref={bannerInputRef}
                         type="file"
                         accept="image/*"
                         className="hidden"
                         onChange={(e) =>
-                            onUpdateField("cover", e.target.files?.[0] ?? null)
+                            onUpdateField("banner", e.target.files?.[0] ?? null)
                         }
                     />
                     <button
                         type="button"
-                        onClick={() => coverInputRef.current?.click()}
+                        onClick={() => bannerInputRef.current?.click()}
                         className="w-full h-24 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-sm text-zinc-500 hover:border-[#88008B] hover:text-[#88008B] transition-colors"
                     >
-                        {formData.cover ? formData.cover.name : "Subir portada"}
+                        {formData.banner ? formData.banner.name : "Subir portada"}
                     </button>
                 </div>
             </div>

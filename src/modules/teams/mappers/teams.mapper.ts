@@ -11,12 +11,12 @@ export function mapTeamResponseToModel(dto: TeamResponseDTO): Team {
         name: dto.name,
         tag: dto.tag,
         description: dto.description,
-        country: dto.country,
-        country_id: dto.country_id,
-        country_iso: dto.country_iso,
+        country: dto.country.name,
+        country_id: dto.country.id,
+        country_iso: dto.country.iso_code,
         logo: dto.logo,
-        cover: dto.cover,
-        colorHex: dto.color_hex,
+        banner: dto.banner,
+        colorHex: dto.color_hex ?? "",
         teamGames: (dto.team_games ?? []).map(mapTeamGameResponseToModel),
     };
 }

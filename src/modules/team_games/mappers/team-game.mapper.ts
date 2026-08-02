@@ -1,5 +1,17 @@
-import { TeamGame } from "../models/team-game.models";
+import { TeamGame, TeamGameItem } from "../models/team-game.models";
 import { RosterMember } from "@/modules/users/models/users.models";
+import { TeamGameItemDTO } from "../dto/team-game.dto";
+
+export function mapTeamGameItemResponseToModel(
+    dto: TeamGameItemDTO
+): TeamGameItem {
+    return {
+        id: dto.id,
+        gameId: dto.game_id,
+        gameName: dto.game_name,
+        logo: dto.logo ?? undefined,
+    };
+}
 
 interface TeamGameResponseDTO {
     id: string;

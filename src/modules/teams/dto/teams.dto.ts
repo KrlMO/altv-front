@@ -5,18 +5,25 @@ export interface MyTeamListItemDTO {
     member_role: string;
 }
 
+export interface CountryDTO {
+    id: number;
+    name: string;
+    flag_path: string;
+    iso_code: string;
+}
+
 export interface TeamResponseDTO {
     id: string;
     name: string;
     tag: string;
     description: string;
-    country: string;
-    country_id: number;
-    country_iso: string;
+    country: CountryDTO;
     logo: string;
-    cover: string;
-    color_hex: string;
-    team_games: TeamGameResponseDTO[];
+    banner: string;
+    is_virtual: boolean;
+    active: boolean;
+    color_hex?: string;
+    team_games?: TeamGameResponseDTO[];
 }
 
 export interface TeamGameResponseDTO {
@@ -37,18 +44,6 @@ export interface RosterMemberResponseDTO {
     jersey_photo?: string;
 }
 
-export interface RosterMemberDTO {
-    user_id: string;
-    role?: string;
-    team_role: string;
-    jersey_photo?: File;
-}
-
-export interface RosterEntryDTO {
-    game_id: string;
-    members: RosterMemberDTO[];
-}
-
 export interface CreateTeamRequestDTO {
     name: string;
     tag: string;
@@ -56,7 +51,6 @@ export interface CreateTeamRequestDTO {
     country_id: number;
     logo?: File;
     banner?: File;
-    rosters?: RosterEntryDTO[];
 }
 
 export type UpdateTeamRequestDTO = Partial<CreateTeamRequestDTO>;
