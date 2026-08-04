@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Region, fetchRegions } from "../services/region.service";
+import { Region } from "../dto/region.dto";
+import { fetchRegions } from "../services/region.service";
 
 export function useRegions() {
     const [regions, setRegions] = useState<Region[]>([]);

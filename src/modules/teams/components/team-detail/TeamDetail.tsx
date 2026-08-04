@@ -19,11 +19,15 @@ export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
     const {
         rosters,
         loading: rostersLoading,
-        adding,
-        removingId,
+        saving,
+        deactivatingId,
+        activatingId,
         error: rostersError,
-        addGame,
-        removeGame,
+        fetchMembers,
+        addRoster,
+        updateRoster,
+        deactivateGame,
+        activateGame,
     } = useTeamRosters(teamId);
 
     const showRostersStep = !!teamId && canAdminRosters;
@@ -100,11 +104,15 @@ export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
                         rosters={rosters}
                         loading={rostersLoading}
                         canManage={canAdminRosters}
-                        adding={adding}
-                        removingId={removingId}
+                        saving={saving}
+                        deactivatingId={deactivatingId}
+                        activatingId={activatingId}
                         error={rostersError}
-                        onAddGame={addGame}
-                        onRemove={removeGame}
+                        onFetchMembers={fetchMembers}
+                        onAddRoster={addRoster}
+                        onUpdateRoster={updateRoster}
+                        onDeactivate={deactivateGame}
+                        onActivate={activateGame}
                         onPrev={prevStep}
                         onNext={nextStep}
                     />

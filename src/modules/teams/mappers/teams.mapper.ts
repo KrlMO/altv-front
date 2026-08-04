@@ -4,6 +4,8 @@ import {
     MyTeamListItemDTO,
 } from "../dto/teams.dto";
 import { mapTeamGameResponseToModel } from "@/modules/team_games/mappers/team-game.mapper";
+import { TeamGameManageMemberDTO } from "@/modules/team_games/dto/team-game.dto";
+import { RosterPlayer, TeamRole } from "../types/roster";
 
 export function mapTeamResponseToModel(dto: TeamResponseDTO): Team {
     return {
@@ -27,5 +29,31 @@ export function mapMyTeamListItemDTOToModel(dto: MyTeamListItemDTO): MyTeamListI
         name: dto.name,
         logo: dto.logo,
         member_role: dto.member_role,
+    };
+}
+
+export function mapManageMemberDTOToRosterPlayer(
+    dto: TeamGameManageMemberDTO
+): RosterPlayer {
+    return {
+        player: {
+            id: dto.user_id,
+            username: dto.username,
+            firstName: dto.first_name,
+            lastName: dto.last_name,
+            avatar: dto.avatar,
+            country: {
+                id: dto.country.id,
+                name: dto.country.name,
+                isoCode: dto.country.iso_code,
+                flagPath: dto.country.flag_path,
+            },
+            countryCode: dto.country_code,
+            birthDate: dto.birth_date ?? "",
+        },
+        jerseyPhoto: null,
+        jerseyPhotoUrl: dto.jersey_photo || undefined,
+        roleId: null,
+        teamRole: dto.team_role as TeamRole,
     };
 }

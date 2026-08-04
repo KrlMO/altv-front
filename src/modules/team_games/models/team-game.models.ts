@@ -5,6 +5,7 @@ export interface TeamGameItem {
     gameId: string;
     gameName: string;
     logo?: string;
+    active: boolean;
 }
 
 export interface TeamGame {

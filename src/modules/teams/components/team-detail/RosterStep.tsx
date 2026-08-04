@@ -5,16 +5,26 @@ import { MainButton } from "@/components/ui/buttom/MainButton";
 import { Game } from "@/modules/team_games/models/game.models";
 import { TeamGameItem } from "@/modules/team_games/models/team-game.models";
 import { AddRosterModal } from "./AddRosterModal";
+import { RosterEntry, RosterPlayer } from "../../types/roster";
 
 interface RosterStepProps {
     rosters: TeamGameItem[];
     loading: boolean;
     canManage: boolean;
-    adding: boolean;
-    removingId: string | null;
+    saving: boolean;
+    deactivatingId: string | null;
+    activatingId: string | null;
     error?: string | null;
-    onAddGame: (game: Game) => void;
-    onRemove: (teamGameId: string) => void;
+    onFetchMembers: (teamGameId: string) => Promise<RosterPlayer[]>;
+    onAddRoster: (game: Game, players: RosterPlayer[]) => Promise<void>;
+    onUpdateRoster: (
+        teamGameId: string,
+        gameId: string,
+        current: RosterPlayer[],
+        entry: RosterEntry
+    ) => Promise<void>;
+    onDeactivate: (teamGameId: string) => void;
+    onActivate: (teamGameId: string) => void;
     onPrev: () => void;
     onNext: () => void;
 }
@@ -23,15 +33,61 @@ export function RosterStep({
     rosters,
     loading,
     canManage,
-    adding,
-    removingId,
+    saving,
+    deactivatingId,
+    activatingId,
     error,
-    onAddGame,
-    onRemove,
+    onFetchMembers,
+    onAddRoster,
+    onUpdateRoster,
+    onDeactivate,
+    onActivate,
     onPrev,
     onNext,
 }: RosterStepProps) {
     const [showModal, setShowModal] = useState(false);
+    const [editingRoster, setEditingRoster] = useState<{
+        id: string;
+        game: Game;
+        players: RosterPlayer[];
+    } | null>(null);
+
+    const handleOpenAdd = () => {
+        setEditingRoster(null);
+        setShowModal(true);
+    };
+
+    const handleOpenEdit = async (roster: TeamGameItem) => {
+        const players = await onFetchMembers(roster.id);
+        setEditingRoster({
+            id: roster.id,
+            game: {
+                id: Number(roster.gameId),
+                name: roster.gameName,
+                colorHex: "",
+                slug: "",
+            },
+            players,
+        });
+        setShowModal(true);
+    };
+
+    const handleSave = async (entry: RosterEntry, game: Game) => {
+        if (editingRoster) {
+            await onUpdateRoster(
+                editingRoster.id,
+                String(game.id),
+                editingRoster.players,
+                entry
+            );
+        } else {
+            await onAddRoster(game, entry.players);
+        }
+        setShowModal(false);
+        setEditingRoster(null);
+    };
+
+    const existingGameIds = rosters.map((r) => r.gameId);
 
     return (
         <div className="flex flex-col gap-6">
@@ -40,7 +96,8 @@ export function RosterStep({
             </h2>
 
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                Los rosters son los videojuegos en los que participa tu equipo.
+                Los rosters son los videojuegos en los que participa tu equipo,
+                junto con sus jugadores, coach y staff.
             </p>
 
             {error && <p className="text-sm text-red-400">{error}</p>}
@@ -52,7 +109,7 @@ export function RosterStep({
                     </p>
                 ) : rosters.length === 0 ? (
                     <p className="text-sm text-zinc-400">
-                        Tu equipo aún no tiene videojuegos agregados.
+                        Tu equipo aún no tiene rosters agregados.
                     </p>
                 ) : (
                     rosters.map((roster) => (
@@ -68,21 +125,51 @@ export function RosterStep({
                                         className="w-9 h-9 rounded-lg object-cover bg-zinc-200 dark:bg-zinc-700 shrink-0"
                                     />
                                 )}
-                                <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
-                                    {roster.gameName}
-                                </span>
+                                <div className="flex items-center gap-2 min-w-0">
+                                    <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                                        {roster.gameName}
+                                    </span>
+                                    {!roster.active && (
+                                        <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-red-100 text-red-500 dark:bg-red-900/40 dark:text-red-400">
+                                            Desactivado
+                                        </span>
+                                    )}
+                                </div>
                             </div>
                             {canManage && (
-                                <button
-                                    type="button"
-                                    onClick={() => onRemove(roster.id)}
-                                    disabled={removingId === roster.id}
-                                    className="text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-40"
-                                >
-                                    {removingId === roster.id
-                                        ? "Eliminando..."
-                                        : "Eliminar"}
-                                </button>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleOpenEdit(roster)}
+                                        disabled={saving || deactivatingId === roster.id || activatingId === roster.id}
+                                        className="text-xs text-zinc-400 hover:text-[#88008B] transition-colors disabled:opacity-40"
+                                    >
+                                        Editar
+                                    </button>
+                                    {roster.active ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => onDeactivate(roster.id)}
+                                            disabled={saving || deactivatingId === roster.id || activatingId === roster.id}
+                                            className="text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-40"
+                                        >
+                                            {deactivatingId === roster.id
+                                                ? "Desactivando..."
+                                                : "Desactivar"}
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={() => onActivate(roster.id)}
+                                            disabled={saving || deactivatingId === roster.id || activatingId === roster.id}
+                                            className="text-xs text-green-400 hover:text-green-300 transition-colors disabled:opacity-40"
+                                        >
+                                            {activatingId === roster.id
+                                                ? "Activando..."
+                                                : "Activar"}
+                                        </button>
+                                    )}
+                                </div>
                             )}
                         </div>
                     ))
@@ -92,31 +179,48 @@ export function RosterStep({
             {canManage && (
                 <button
                     type="button"
-                    onClick={() => setShowModal(true)}
-                    disabled={adding}
+                    onClick={handleOpenAdd}
+                    disabled={saving}
                     className="w-full p-4 rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center gap-2 text-sm text-zinc-500 hover:border-[#88008B] hover:text-[#88008B] transition-colors disabled:opacity-40"
                 >
                     <span className="text-lg">+</span>
-                    {adding ? "Añadiendo..." : "Añadir videojuego"}
+                    {saving ? "Guardando..." : "Añadir roster"}
                 </button>
             )}
 
             <AddRosterModal
-                key="add"
+                key={editingRoster ? `edit-${editingRoster.id}` : "add"}
                 isOpen={showModal}
-                onClose={() => setShowModal(false)}
-                gameOnly
-                onSelectGame={(game) => {
+                onClose={() => {
                     setShowModal(false);
-                    onAddGame(game);
+                    setEditingRoster(null);
                 }}
+                onSave={handleSave}
+                existingGameIds={existingGameIds}
+                editingEntry={
+                    editingRoster
+                        ? {
+                              index: 0,
+                              entry: {
+                                  teamGameId: editingRoster.id,
+                                  gameName: editingRoster.game.name,
+                                  gameId: String(editingRoster.game.id),
+                                  players: editingRoster.players,
+                              },
+                          }
+                        : undefined
+                }
             />
 
             <div className="flex gap-3">
                 <MainButton type="button" variant="secondary" onClick={onPrev}>
                     Anterior
                 </MainButton>
-                <MainButton type="button" onClick={onNext}>
+                <MainButton
+                    type="button"
+                    onClick={onNext}
+                    disabled={rosters.length === 0}
+                >
                     Siguiente
                 </MainButton>
             </div>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MyTeamsList } from "../components/teams-list/MyTeamsList";
 import { TeamDetail } from "../components/team-detail/TeamDetail";
 
-export function ManageTeams() {
+export function ManageTeamsPage() {
     const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
     const [creating, setCreating] = useState(false);
 

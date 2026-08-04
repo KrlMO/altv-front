@@ -10,6 +10,7 @@ export function mapTeamGameItemResponseToModel(
         gameId: dto.game_id,
         gameName: dto.game_name,
         logo: dto.logo ?? undefined,
+        active: dto.active,
     };
 }
 

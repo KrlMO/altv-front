@@ -14,11 +14,9 @@ type SearchSection = "players" | "coach" | "others";
 interface AddRosterModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave?: (entry: RosterEntry, index?: number) => void;
+    onSave?: (entry: RosterEntry, game: Game, index?: number) => void | Promise<void>;
     existingGameIds?: string[];
     editingEntry?: { index: number; entry: RosterEntry };
-    gameOnly?: boolean;
-    onSelectGame?: (game: Game) => void;
 }
 
 function calculateAge(birthDate: string): number {
@@ -38,8 +36,6 @@ export function AddRosterModal({
     onSave,
     existingGameIds = [],
     editingEntry,
-    gameOnly = false,
-    onSelectGame,
 }: AddRosterModalProps) {
     const {
         query: gameQuery,
@@ -96,7 +92,7 @@ export function AddRosterModal({
     const hasCoach = coachList.length > 0;
 
     const canSave =
-        selectedGame !== null && !isDuplicate && (gameOnly || playersList.length > 0);
+        selectedGame !== null && !isDuplicate && playersList.length > 0;
 
     const handleSelectGame = (game: Game) => {
         setSelectedGame(game);
@@ -171,20 +167,16 @@ export function AddRosterModal({
         setPlayerQuery("");
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!selectedGame || isDuplicate) return;
-        if (gameOnly) {
-            onSelectGame?.(selectedGame);
-            resetAndClose();
-            return;
-        }
         if (playersList.length === 0) return;
         const entry: RosterEntry = {
+            teamGameId: isEditing ? editingEntry.entry.teamGameId : undefined,
             gameName: selectedGame.name,
             gameId: String(selectedGame.id),
             players: rosterPlayers,
         };
-        onSave?.(entry, isEditing ? editingEntry.index : undefined);
+        await onSave?.(entry, selectedGame, isEditing ? editingEntry.index : undefined);
         resetAndClose();
     };
 
@@ -206,11 +198,9 @@ export function AddRosterModal({
             isOpen={isOpen}
             onClose={resetAndClose}
             title={
-                gameOnly
-                    ? "Añadir videojuego"
-                    : isEditing
-                      ? "Editar Roster"
-                      : "Añadir Roster"
+                isEditing
+                    ? "Editar Roster"
+                    : "Añadir Roster"
             }
             size="lg"
             footer={
@@ -271,7 +261,7 @@ export function AddRosterModal({
                     )}
                 </div>
 
-                {!gameOnly && (
+                {selectedGame && (
                     <>
                 <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between">
@@ -673,13 +663,26 @@ function PlayerCard({
                             onJerseyChange(globalIndex, e.target.files?.[0] ?? null)
                         }
                     />
-                    <button
-                        type="button"
-                        onClick={() => jerseyInputRef.current?.click()}
-                        className="w-full h-9 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-xs text-zinc-500 hover:border-[#88008B] hover:text-[#88008B] transition-colors"
-                    >
-                        {rp.jerseyPhoto ? rp.jerseyPhoto.name : "Subir jersey"}
-                    </button>
+                    <div className="flex items-center gap-2">
+                        {rp.jerseyPhotoUrl && (
+                            <img
+                                src={rp.jerseyPhotoUrl}
+                                alt="Jersey"
+                                className="w-9 h-9 rounded object-cover bg-zinc-200 dark:bg-zinc-700 shrink-0"
+                            />
+                        )}
+                        <button
+                            type="button"
+                            onClick={() => jerseyInputRef.current?.click()}
+                            className="flex-1 h-9 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-xs text-zinc-500 hover:border-[#88008B] hover:text-[#88008B] transition-colors"
+                        >
+                            {rp.jerseyPhoto
+                                ? rp.jerseyPhoto.name
+                                : rp.jerseyPhotoUrl
+                                  ? "Cambiar jersey"
+                                  : "Subir jersey"}
+                        </button>
+                    </div>
                 </div>
 
                 {(rp.teamRole === "PLAYER" || rp.teamRole === "TEAM_CAPTAIN") && (
