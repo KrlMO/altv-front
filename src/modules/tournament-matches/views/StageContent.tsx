@@ -28,12 +28,12 @@ export function StageContent({ stage }: StageContentProps) {
     return (
         <>
             {stage.format === "SINGLE_ELIMINATION" && matches && (
-                <BracketView matches={matches} />
+                <BracketView matches={matches} stage={stage} />
             )}
 
             {(stage.format === "SWISS" || stage.format === "GROUP_STAGE") && (
                 <div className="flex flex-col gap-6">
-                    {matches && <SwissRounds matches={matches} />}
+                    {matches && <SwissRounds matches={matches} stage={stage} />}
                     <div>
                         <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-neutral-400">
                             Posiciones

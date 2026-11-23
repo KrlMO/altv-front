@@ -28,9 +28,10 @@ function TeamRow({
 interface MatchCardProps {
     match: Match;
     showRoundLabel?: boolean;
+    highlight?: boolean;
 }
 
-export function MatchCard({ match, showRoundLabel }: MatchCardProps) {
+export function MatchCard({ match, showRoundLabel, highlight }: MatchCardProps) {
     const isTbd = !match.teamA || !match.teamB;
     const hasScores = match.scoreA !== undefined || match.scoreB !== undefined;
     const winnerA =
@@ -50,7 +51,13 @@ export function MatchCard({ match, showRoundLabel }: MatchCardProps) {
                   : "Pendiente";
 
     return (
-        <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-2.5">
+        <div
+            className={`rounded-lg border p-2.5 ${
+                highlight
+                    ? "border-amber-500/60 bg-amber-500/5"
+                    : "border-neutral-800 bg-neutral-900"
+            }`}
+        >
             {showRoundLabel && (
                 <p className="mb-1.5 text-xs text-neutral-500">
                     Ronda {match.roundNumber} · Partido {match.matchNumber}

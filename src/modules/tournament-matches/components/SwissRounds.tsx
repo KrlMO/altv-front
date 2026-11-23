@@ -1,15 +1,18 @@
 "use client";
 
-import { Match } from "../models/match.models";
+import { Match, Stage } from "../models/match.models";
 import { MatchCard } from "./MatchCard";
+import { buildRoundLabels } from "../utils/roundLabels";
 
 interface SwissRoundsProps {
     matches: Match[];
+    stage: Stage;
 }
 
 // SwissRounds groups matches by round in a vertical list (swiss and group
 // stages don't have a bracket shape).
-export function SwissRounds({ matches }: SwissRoundsProps) {
+export function SwissRounds({ matches, stage }: SwissRoundsProps) {
+    const labels = buildRoundLabels(stage, matches);
     const rounds = new Map<number, Match[]>();
     for (const m of matches) {
         const list = rounds.get(m.roundNumber) ?? [];
@@ -31,7 +34,7 @@ export function SwissRounds({ matches }: SwissRoundsProps) {
             {sortedRounds.map(([round, roundMatches]) => (
                 <section key={round}>
                     <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                        Ronda {round}
+                        {labels.get(round) ?? `Ronda ${round}`}
                     </h4>
                     <div className="grid gap-3 sm:grid-cols-2">
                         {roundMatches.map((m) => (
