@@ -26,8 +26,24 @@ export function useTeams() {
     }, [accessToken]);
 
     useEffect(() => {
-        load();
-    }, [load]);
+        if (!accessToken) return;
+        let cancelled = false;
+        (async () => {
+            try {
+                const data = await fetchMyTeams(accessToken);
+                if (cancelled) return;
+                setTeams(data ?? []);
+                setError(null);
+            } catch {
+                if (!cancelled) setError("Error al cargar tus equipos");
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, [accessToken]);
 
     return { teams, loading, error, reload: load };
 }

@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { useTeamWizard } from "../../hooks/useTeamWizard";
+import { useTeamPermission } from "../../hooks/useTeamPermission";
+import { useTeamRosters } from "../../hooks/useTeamRosters";
 import { StepIndicator } from "./StepIndicator";
 import { TeamInfoStep } from "./TeamInfoStep";
 import { RosterStep } from "./RosterStep";
@@ -13,10 +15,27 @@ interface TeamDetailProps {
 }
 
 export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
+    const { canAdminRosters } = useTeamPermission(teamId);
+    const {
+        rosters,
+        loading: rostersLoading,
+        saving,
+        deactivatingId,
+        activatingId,
+        error: rostersError,
+        fetchMembers,
+        addRoster,
+        updateRoster,
+        deactivateGame,
+        activateGame,
+    } = useTeamRosters(teamId);
+
+    const showRostersStep = !!teamId && canAdminRosters;
+    const totalSteps = showRostersStep ? 4 : 3;
+
     const {
         step,
         formData,
-        rosters,
         loading,
         submitting,
         error,
@@ -28,11 +47,8 @@ export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
         updateField,
         nextStep,
         prevStep,
-        removeRoster,
-        updateRoster,
-        addRoster,
         submitAll,
-    } = useTeamWizard(teamId);
+    } = useTeamWizard(teamId, totalSteps);
 
     useEffect(() => {
         if (teamId) {
@@ -55,17 +71,22 @@ export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
         );
     }
 
+    const steps = showRostersStep
+        ? [
+              { label: "Datos", step: 1 as const },
+              { label: "Rosters", step: 2 as const },
+              { label: "Resumen", step: 3 as const },
+              { label: "Guardar", step: 4 as const },
+          ]
+        : [
+              { label: "Datos", step: 1 as const },
+              { label: "Resumen", step: 2 as const },
+              { label: "Guardar", step: 3 as const },
+          ];
+
     return (
         <div className="flex flex-col gap-6">
-            <StepIndicator
-                currentStep={step}
-                steps={[
-                    { label: "Datos", step: 1 },
-                    { label: "Roster", step: 2 },
-                    { label: "Resumen", step: 3 },
-                    { label: "Guardar", step: 4 },
-                ]}
-            />
+            <StepIndicator currentStep={step} steps={steps} />
 
             {step === 1 && (
                 <TeamInfoStep
@@ -77,21 +98,37 @@ export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
                 />
             )}
 
-            {step === 2 && (
-                <RosterStep
-                    rosters={rosters}
-                    onAddRoster={addRoster}
-                    onUpdateRoster={updateRoster}
-                    onRemoveRoster={removeRoster}
-                    onPrev={prevStep}
-                    onNext={nextStep}
-                />
-            )}
+            {step === 2 &&
+                (showRostersStep ? (
+                    <RosterStep
+                        rosters={rosters}
+                        loading={rostersLoading}
+                        canManage={canAdminRosters}
+                        saving={saving}
+                        deactivatingId={deactivatingId}
+                        activatingId={activatingId}
+                        error={rostersError}
+                        onFetchMembers={fetchMembers}
+                        onAddRoster={addRoster}
+                        onUpdateRoster={updateRoster}
+                        onDeactivate={deactivateGame}
+                        onActivate={activateGame}
+                        onPrev={prevStep}
+                        onNext={nextStep}
+                    />
+                ) : (
+                    <SummaryStep
+                        formData={formData}
+                        isNew={isNew}
+                        submitting={submitting}
+                        onPrev={prevStep}
+                        onsubmit={handleSubmit}
+                    />
+                ))}
 
-            {step === 3 && (
+            {showRostersStep && step === 3 && (
                 <SummaryStep
                     formData={formData}
-                    rosters={rosters}
                     isNew={isNew}
                     submitting={submitting}
                     onPrev={prevStep}
@@ -99,7 +136,7 @@ export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
                 />
             )}
 
-            {step === 4 && (
+            {((showRostersStep && step === 4) || (!showRostersStep && step === 3)) && (
                 <div className="flex flex-col items-center justify-center h-64 gap-4">
                     {submitting ? (
                         <p className="text-sm text-zinc-400">Guardando...</p>
@@ -109,7 +146,7 @@ export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
                             <button
                                 type="button"
                                 onClick={reset}
-                                className="text-sm text-[#88008B] hover:underline"
+                                className="text-sm text-btn-primary hover:underline"
                             >
                                 Crear otro equipo
                             </button>
@@ -120,7 +157,7 @@ export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
                             <button
                                 type="button"
                                 onClick={prevStep}
-                                className="text-sm text-[#88008B] hover:underline"
+                                className="text-sm text-btn-primary hover:underline"
                             >
                                 Volver
                             </button>

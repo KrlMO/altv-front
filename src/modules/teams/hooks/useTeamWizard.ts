@@ -3,11 +3,9 @@
 import { useState, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Team } from "../models/teams";
-import { PlayerSearchResult } from "@/modules/users/models/users.models";
 import {
     CreateTeamRequestDTO,
     UpdateTeamRequestDTO,
-    RosterEntryDTO,
 } from "../dto/teams.dto";
 import {
     fetchTeamById,
@@ -17,8 +15,6 @@ import {
 
 export type WizardStep = 1 | 2 | 3 | 4;
 
-export type TeamRole = "PLAYER" | "COACH" | "ANALYST" | "STAFF" | "TEAM_CAPTAIN";
-
 export interface TeamFormData {
     name: string;
     tag: string;
@@ -27,20 +23,7 @@ export interface TeamFormData {
     country_name?: string;
     country_iso?: string;
     logo: File | null;
-    cover: File | null;
-}
-
-export interface RosterPlayer {
-    player: PlayerSearchResult;
-    jerseyPhoto: File | null;
-    roleId: string | null;
-    teamRole: TeamRole;
-}
-
-export interface RosterEntry {
-    gameName: string;
-    gameId: string;
-    players: RosterPlayer[];
+    banner: File | null;
 }
 
 const emptyForm: TeamFormData = {
@@ -49,22 +32,14 @@ const emptyForm: TeamFormData = {
     description: "",
     country_id: undefined,
     logo: null,
-    cover: null,
+    banner: null,
 };
 
-const STEP_LABELS: Record<WizardStep, string> = {
-    1: "Datos del Equipo",
-    2: "Añadir Roster",
-    3: "Resumen",
-    4: "Guardar",
-};
-
-export function useTeamWizard(teamId: string | null) {
+export function useTeamWizard(teamId: string | null, totalSteps: number = 3) {
     const { accessToken } = useAuth();
 
     const [step, setStep] = useState<WizardStep>(1);
     const [formData, setFormData] = useState<TeamFormData>(emptyForm);
-    const [rosters, setRosters] = useState<RosterEntry[]>([]);
     const [existingTeam, setExistingTeam] = useState<Team | null>(null);
     const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
@@ -92,28 +67,8 @@ export function useTeamWizard(teamId: string | null) {
                 country_name: team.country,
                 country_iso: team.country_iso,
                 logo: null,
-                cover: null,
+                banner: null,
             });
-            const mappedRosters: RosterEntry[] = team.teamGames.map((tg) => ({
-                gameName: tg.gameName,
-                gameId: tg.gameId,
-                players: tg.roster.map((r) => ({
-                    player: {
-                        id: r.userId,
-                        username: "",
-                        firstName: "",
-                        lastName: "",
-                        avatar: "",
-                        country: { id: 0, name: "", isoCode: "", flagPath: "" },
-                        countryCode: "",
-                        birthDate: "",
-                    },
-                    jerseyPhoto: null,
-                    roleId: r.role || null,
-                    teamRole: (r.teamRole as TeamRole) || "PLAYER",
-                })),
-            }));
-            setRosters(mappedRosters);
         } catch {
             setError("Error al cargar el equipo");
         } finally {
@@ -124,7 +79,6 @@ export function useTeamWizard(teamId: string | null) {
     const reset = useCallback(() => {
         setStep(1);
         setFormData(emptyForm);
-        setRosters([]);
         setExistingTeam(null);
         setError(null);
         setSuccess(null);
@@ -138,8 +92,8 @@ export function useTeamWizard(teamId: string | null) {
     );
 
     const nextStep = useCallback(() => {
-        setStep((prev) => Math.min(prev + 1, 4) as WizardStep);
-    }, []);
+        setStep((prev) => Math.min(prev + 1, totalSteps) as WizardStep);
+    }, [totalSteps]);
 
     const prevStep = useCallback(() => {
         setStep((prev) => Math.max(prev - 1, 1) as WizardStep);
@@ -149,32 +103,7 @@ export function useTeamWizard(teamId: string | null) {
         setStep(target);
     }, []);
 
-    const addRoster = useCallback((entry: RosterEntry) => {
-        setRosters((prev) => [...prev, entry]);
-    }, []);
-
-    const updateRoster = useCallback((index: number, entry: RosterEntry) => {
-        setRosters((prev) => prev.map((r, i) => (i === index ? entry : r)));
-    }, []);
-
-    const removeRoster = useCallback((index: number) => {
-        setRosters((prev) => prev.filter((_, i) => i !== index));
-    }, []);
-
     const canProceedFromStep1 = formData.name.trim() !== "" && formData.tag.trim() !== "" && formData.country_id !== undefined;
-
-    const buildRostersDTO = (): RosterEntryDTO[] | undefined => {
-        if (rosters.length === 0) return undefined;
-        return rosters.map((roster) => ({
-            game_id: roster.gameId,
-            members: roster.players.map((rp) => ({
-                user_id: rp.player.id,
-                role: rp.roleId || undefined,
-                team_role: rp.teamRole,
-                jersey_photo: rp.jerseyPhoto || undefined,
-            })),
-        }));
-    };
 
     const submitAll = useCallback(async () => {
         try {
@@ -193,10 +122,7 @@ export function useTeamWizard(teamId: string | null) {
                 if (formData.country_id !== existingTeam.country_id)
                     dto.country_id = formData.country_id!;
                 if (formData.logo) dto.logo = formData.logo;
-                if (formData.cover) dto.banner = formData.cover;
-
-                const rostersDTO = buildRostersDTO();
-                if (rostersDTO) dto.rosters = rostersDTO;
+                if (formData.banner) dto.banner = formData.banner;
 
                 await updateTeam(teamId, dto, accessToken ?? "");
             } else {
@@ -207,10 +133,7 @@ export function useTeamWizard(teamId: string | null) {
                     country_id: formData.country_id!,
                 };
                 if (formData.logo) dto.logo = formData.logo;
-                if (formData.cover) dto.banner = formData.cover;
-
-                const rostersDTO = buildRostersDTO();
-                if (rostersDTO) dto.rosters = rostersDTO;
+                if (formData.banner) dto.banner = formData.banner;
 
                 const created = await createTeam(dto, accessToken ?? "");
                 savedTeamId = created.id;
@@ -224,13 +147,11 @@ export function useTeamWizard(teamId: string | null) {
         } finally {
             setSubmitting(false);
         }
-    }, [teamId, existingTeam, formData, accessToken, buildRostersDTO]);
+    }, [teamId, existingTeam, formData, accessToken]);
 
     return {
         step,
-        stepLabel: STEP_LABELS[step],
         formData,
-        rosters,
         existingTeam,
         loading,
         submitting,
@@ -244,9 +165,6 @@ export function useTeamWizard(teamId: string | null) {
         nextStep,
         prevStep,
         goToStep,
-        addRoster,
-        updateRoster,
-        removeRoster,
         submitAll,
     };
 }

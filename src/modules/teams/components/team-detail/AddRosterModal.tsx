@@ -7,15 +7,15 @@ import { useGames } from "@/modules/team_games/hooks/useGames";
 import { usePlayerSearch } from "@/modules/users/hooks/usePlayerSearch";
 import { Game } from "@/modules/team_games/models/game.models";
 import { PlayerSearchResult } from "@/modules/users/models/users.models";
-import { RosterEntry, RosterPlayer, TeamRole } from "../../hooks/useTeamWizard";
+import { RosterEntry, RosterPlayer, TeamRole } from "../../types/roster";
 
 type SearchSection = "players" | "coach" | "others";
 
 interface AddRosterModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (entry: RosterEntry, index?: number) => void;
-    existingGameIds: string[];
+    onSave?: (entry: RosterEntry, game: Game, index?: number) => void | Promise<void>;
+    existingGameIds?: string[];
     editingEntry?: { index: number; entry: RosterEntry };
 }
 
@@ -34,7 +34,7 @@ export function AddRosterModal({
     isOpen,
     onClose,
     onSave,
-    existingGameIds,
+    existingGameIds = [],
     editingEntry,
 }: AddRosterModalProps) {
     const {
@@ -56,6 +56,7 @@ export function AddRosterModal({
               id: Number(editingEntry.entry.gameId),
               name: editingEntry.entry.gameName,
               colorHex: "",
+              slug: "",
           }
         : null;
 
@@ -96,7 +97,6 @@ export function AddRosterModal({
     const handleSelectGame = (game: Game) => {
         setSelectedGame(game);
         setGameQuery(game.name);
-        setGames([]);
     };
 
     const handleSelectPlayer = (player: PlayerSearchResult) => {
@@ -167,14 +167,16 @@ export function AddRosterModal({
         setPlayerQuery("");
     };
 
-    const handleSave = () => {
-        if (!selectedGame || isDuplicate || playersList.length === 0) return;
+    const handleSave = async () => {
+        if (!selectedGame || isDuplicate) return;
+        if (playersList.length === 0) return;
         const entry: RosterEntry = {
+            teamGameId: isEditing ? editingEntry.entry.teamGameId : undefined,
             gameName: selectedGame.name,
             gameId: String(selectedGame.id),
             players: rosterPlayers,
         };
-        onSave(entry, isEditing ? editingEntry.index : undefined);
+        await onSave?.(entry, selectedGame, isEditing ? editingEntry.index : undefined);
         resetAndClose();
     };
 
@@ -195,7 +197,11 @@ export function AddRosterModal({
         <Modal
             isOpen={isOpen}
             onClose={resetAndClose}
-            title={isEditing ? "Editar Roster" : "Añadir Roster"}
+            title={
+                isEditing
+                    ? "Editar Roster"
+                    : "Añadir Roster"
+            }
             size="lg"
             footer={
                 <div className="flex justify-end gap-3">
@@ -229,7 +235,7 @@ export function AddRosterModal({
                             if (selectedGame) setSelectedGame(null);
                         }}
                         placeholder="Buscar juego..."
-                        className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-btn-primary/60"
                     />
                     {gamesLoading && (
                         <p className="text-xs text-zinc-400">Buscando...</p>
@@ -255,6 +261,8 @@ export function AddRosterModal({
                     )}
                 </div>
 
+                {selectedGame && (
+                    <>
                 <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                         <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
@@ -290,7 +298,7 @@ export function AddRosterModal({
                             <button
                                 type="button"
                                 onClick={() => openSearch("players")}
-                                className="w-full p-3 rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center gap-2 text-sm text-zinc-500 hover:border-[#88008B] hover:text-[#88008B] transition-colors"
+                                className="w-full p-3 rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center gap-2 text-sm text-zinc-500 hover:border-btn-primary hover:text-btn-primary transition-colors"
                             >
                                 <span className="text-lg">+</span>
                                 Añadir jugador
@@ -331,7 +339,7 @@ export function AddRosterModal({
                                 className={`w-full p-3 rounded-lg border-2 border-dashed flex items-center justify-center gap-2 text-sm transition-colors ${
                                     hasCoach
                                         ? "border-zinc-200 dark:border-zinc-800 text-zinc-300 dark:text-zinc-600 cursor-not-allowed"
-                                        : "border-zinc-300 dark:border-zinc-700 text-zinc-500 hover:border-[#88008B] hover:text-[#88008B]"
+                                        : "border-zinc-300 dark:border-zinc-700 text-zinc-500 hover:border-btn-primary hover:text-btn-primary"
                                 }`}
                             >
                                 <span className="text-lg">+</span>
@@ -373,7 +381,7 @@ export function AddRosterModal({
                                     onClick={() => setOthersSubRole("ANALYST")}
                                     className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                                         othersSubRole === "ANALYST"
-                                            ? "bg-[#88008B] text-white"
+                                            ? "bg-btn-primary text-white"
                                             : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700"
                                     }`}
                                 >
@@ -384,7 +392,7 @@ export function AddRosterModal({
                                     onClick={() => setOthersSubRole("STAFF")}
                                     className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                                         othersSubRole === "STAFF"
-                                            ? "bg-[#88008B] text-white"
+                                            ? "bg-btn-primary text-white"
                                             : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700"
                                     }`}
                                 >
@@ -397,13 +405,15 @@ export function AddRosterModal({
                         <button
                             type="button"
                             onClick={() => openSearch("others")}
-                            className="w-full p-3 rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center gap-2 text-sm text-zinc-500 hover:border-[#88008B] hover:text-[#88008B] transition-colors"
+                            className="w-full p-3 rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center gap-2 text-sm text-zinc-500 hover:border-btn-primary hover:text-btn-primary transition-colors"
                         >
                             <span className="text-lg">+</span>
                             Añadir analyst / staff
                         </button>
                     )}
                 </div>
+                    </>
+                )}
             </div>
         </Modal>
     );
@@ -417,7 +427,7 @@ export function AddRosterModal({
                     onChange={(e) => setPlayerQuery(e.target.value)}
                     placeholder="Buscar por nombre o código..."
                     autoFocus
-                    className="w-full h-9 rounded-lg border px-3 text-sm bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full h-9 rounded-lg border px-3 text-sm bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-btn-primary/60"
                 />
                 {playersLoading && (
                     <p className="text-xs text-zinc-400">Buscando...</p>
@@ -619,7 +629,7 @@ function PlayerCard({
                         onClick={() => onTeamRoleToggle(globalIndex, "ANALYST")}
                         className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                             rp.teamRole === "ANALYST"
-                                ? "bg-[#88008B] text-white"
+                                ? "bg-btn-primary text-white"
                                 : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700"
                         }`}
                     >
@@ -630,7 +640,7 @@ function PlayerCard({
                         onClick={() => onTeamRoleToggle(globalIndex, "STAFF")}
                         className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                             rp.teamRole === "STAFF"
-                                ? "bg-[#88008B] text-white"
+                                ? "bg-btn-primary text-white"
                                 : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700"
                         }`}
                     >
@@ -653,13 +663,26 @@ function PlayerCard({
                             onJerseyChange(globalIndex, e.target.files?.[0] ?? null)
                         }
                     />
-                    <button
-                        type="button"
-                        onClick={() => jerseyInputRef.current?.click()}
-                        className="w-full h-9 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-xs text-zinc-500 hover:border-[#88008B] hover:text-[#88008B] transition-colors"
-                    >
-                        {rp.jerseyPhoto ? rp.jerseyPhoto.name : "Subir jersey"}
-                    </button>
+                    <div className="flex items-center gap-2">
+                        {rp.jerseyPhotoUrl && (
+                            <img
+                                src={rp.jerseyPhotoUrl}
+                                alt="Jersey"
+                                className="w-9 h-9 rounded object-cover bg-zinc-200 dark:bg-zinc-700 shrink-0"
+                            />
+                        )}
+                        <button
+                            type="button"
+                            onClick={() => jerseyInputRef.current?.click()}
+                            className="flex-1 h-9 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-xs text-zinc-500 hover:border-btn-primary hover:text-btn-primary transition-colors"
+                        >
+                            {rp.jerseyPhoto
+                                ? rp.jerseyPhoto.name
+                                : rp.jerseyPhotoUrl
+                                  ? "Cambiar jersey"
+                                  : "Subir jersey"}
+                        </button>
+                    </div>
                 </div>
 
                 {(rp.teamRole === "PLAYER" || rp.teamRole === "TEAM_CAPTAIN") && (
@@ -670,7 +693,7 @@ function PlayerCard({
                         <select
                             value={rp.roleId ?? ""}
                             onChange={(e) => onRoleChange(globalIndex, e.target.value)}
-                            className="w-full h-9 rounded-lg border px-2 text-xs bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full h-9 rounded-lg border px-2 text-xs bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-btn-primary/60"
                         >
                             <option value="">Sin rol</option>
                         </select>

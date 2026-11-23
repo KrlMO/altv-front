@@ -16,6 +16,7 @@ type AuthState = {
     user: User | null;
     accessToken: string | null;
     loading: boolean;
+    authLoading: boolean;
     error: string | null;
     login: (data: LoginDTO) => Promise<boolean>;
     logout: () => void;
@@ -38,8 +39,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(result.data.user);
             setAccessToken(result.data.access_token);
             return true;
-        } catch (err: any) {
-            switch (err.status) {
+        } catch (err) {
+            const apiError = err as { status?: number; message?: string };
+            switch (apiError.status) {
                 case 400:
                     setError("Datos de entrada inválidos");
                     break;
@@ -56,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     setError("Error del servidor, intenta más tarde");
                     break;
                 default:
-                    setError(err.message || "Error inesperado");
+                    setError(apiError.message || "Error inesperado");
             }
 
             return false;
@@ -82,13 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         initAuth();
     }, []);
 
-    useEffect(() => {
-        console.log("AuthProvider mounted");
-    }, []);
-
     const logout = async () => {
         try {
-            //
             await logoutRequest();
         } catch (err) {
             console.error("Error during logout:", err);
@@ -104,6 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 user,
                 accessToken,
                 loading,
+                authLoading: !initialized,
                 error,
                 login,
                 logout,

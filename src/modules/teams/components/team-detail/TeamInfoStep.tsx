@@ -21,7 +21,7 @@ export function TeamInfoStep({
     onNext,
 }: TeamInfoStepProps) {
     const logoInputRef = useRef<HTMLInputElement>(null);
-    const coverInputRef = useRef<HTMLInputElement>(null);
+    const bannerInputRef = useRef<HTMLInputElement>(null);
 
     return (
         <div className="flex flex-col gap-6">
@@ -46,7 +46,7 @@ export function TeamInfoStep({
                     <button
                         type="button"
                         onClick={() => logoInputRef.current?.click()}
-                        className="w-full h-24 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-sm text-zinc-500 hover:border-[#88008B] hover:text-[#88008B] transition-colors"
+                        className="w-full h-24 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-sm text-zinc-500 hover:border-btn-primary hover:text-btn-primary transition-colors"
                     >
                         {formData.logo ? formData.logo.name : "Subir logo"}
                     </button>
@@ -57,20 +57,20 @@ export function TeamInfoStep({
                         Portada del equipo
                     </label>
                     <input
-                        ref={coverInputRef}
+                        ref={bannerInputRef}
                         type="file"
                         accept="image/*"
                         className="hidden"
                         onChange={(e) =>
-                            onUpdateField("cover", e.target.files?.[0] ?? null)
+                            onUpdateField("banner", e.target.files?.[0] ?? null)
                         }
                     />
                     <button
                         type="button"
-                        onClick={() => coverInputRef.current?.click()}
-                        className="w-full h-24 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-sm text-zinc-500 hover:border-[#88008B] hover:text-[#88008B] transition-colors"
+                        onClick={() => bannerInputRef.current?.click()}
+                        className="w-full h-24 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-sm text-zinc-500 hover:border-btn-primary hover:text-btn-primary transition-colors"
                     >
-                        {formData.cover ? formData.cover.name : "Subir portada"}
+                        {formData.banner ? formData.banner.name : "Subir portada"}
                     </button>
                 </div>
             </div>
@@ -85,7 +85,7 @@ export function TeamInfoStep({
                     onChange={(e) => onUpdateField("name", e.target.value)}
                     required
                     placeholder="Nombre del equipo"
-                    className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-btn-primary/60"
                 />
             </div>
 
@@ -100,7 +100,7 @@ export function TeamInfoStep({
                     required
                     placeholder="TAG"
                     maxLength={10}
-                    className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-btn-primary/60"
                 />
             </div>
 
@@ -113,7 +113,7 @@ export function TeamInfoStep({
                     onChange={(e) => onUpdateField("description", e.target.value)}
                     placeholder="Describe tu equipo..."
                     rows={4}
-                    className="w-full rounded-lg border px-3 py-2 text-sm bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                    className="w-full rounded-lg border px-3 py-2 text-sm bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-btn-primary/60 resize-none"
                 />
             </div>
 

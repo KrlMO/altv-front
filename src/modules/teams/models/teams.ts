@@ -9,7 +9,7 @@ export interface Team {
     country_id: number;
     country_iso: string;
     logo: string;
-    cover: string;
+    banner: string;
     colorHex: string;
     teamGames: TeamGame[];
 }

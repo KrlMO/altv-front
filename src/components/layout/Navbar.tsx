@@ -32,6 +32,7 @@ export function Navbar() {
                         <NavItem href="/">Inicio</NavItem>
                         <NavItem href="/app/tournaments">Torneos</NavItem>
                         <NavItem href="/app/teams">Equipos</NavItem>
+                        <NavItem href="/app/organizations">Organizaciones</NavItem>
                         <NavItem href="/app/ranking">Ranking</NavItem>
                         <NavItem href="/app/news">Noticias</NavItem>
                         <NavItem href="/app/about">Nosotros</NavItem>
@@ -67,6 +68,7 @@ export function Navbar() {
                             <NavItem href="/app">Inicio</NavItem>
                             <NavItem href="/app/tournaments">Torneos</NavItem>
                             <NavItem href="/app/teams">Equipos</NavItem>
+                        <NavItem href="/app/organizations">Organizaciones</NavItem>
                             <NavItem href="/app/ranking">Ranking</NavItem>
                             <NavItem href="/app/news">Noticias</NavItem>
                             <NavItem href="/app/about">Nosotros</NavItem>

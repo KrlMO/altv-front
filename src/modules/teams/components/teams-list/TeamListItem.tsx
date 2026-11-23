@@ -21,7 +21,7 @@ export function TeamListItem({
             onClick={() => onSelect(id)}
             className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left ${
                 isSelected
-                    ? "bg-[#88008B]/10 border border-[#88008B]/30"
+                    ? "bg-btn-primary/10 border border-btn-primary/30"
                     : "hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-transparent"
             }`}
         >

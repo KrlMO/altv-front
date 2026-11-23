@@ -17,8 +17,9 @@ export function MyTeamsList({
 }: MyTeamsListProps) {
     const { teams, loading, error } = useTeams();
 
-    const myTeams = teams.filter((t) => t.member_role === "owner");
-    const participatingTeams = teams.filter((t) => t.member_role !== "owner");
+    const TEAM_OWNER = "TEAM_OWNER";
+    const myTeams = teams.filter((t) => t.member_role === TEAM_OWNER);
+    const participatingTeams = teams.filter((t) => t.member_role !== TEAM_OWNER);
 
     return (
         <div className="flex flex-col gap-4">

@@ -7,17 +7,16 @@ interface MainButtonProps
 
 export function ImageButton({
   src,
-  onClick ,
+  onClick,
   className,
   imgClassName,
-  ...props
 }: MainButtonProps) {
   return (
     <button
       onClick={onClick}
       className={`flex items-center justify-center rounded-md p-1 transition-colors hover:bg-gray-100 ${className}`}
     >
-      <img src={src} className={imgClassName} />
+      <img src={src} alt="" className={imgClassName} />
     </button>
   );
 }
