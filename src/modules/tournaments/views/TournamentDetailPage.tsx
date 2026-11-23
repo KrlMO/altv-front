@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { fetchTournamentById } from "../services/tournaments.service";
 import { TournamentItem } from "../models/tournament.models";
 import { TournamentMatchesSection } from "@/modules/tournament-matches/views/TournamentMatchesSection";
@@ -15,6 +16,7 @@ function formatDate(value: string): string {
 
 // tournament === undefined means the fetch is still in flight.
 export function TournamentDetailPage({ id }: { id: number }) {
+    const { accessToken } = useAuth();
     const [tournament, setTournament] = useState<TournamentItem | undefined>(
         undefined
     );
@@ -60,6 +62,14 @@ export function TournamentDetailPage({ id }: { id: number }) {
                     <span className="rounded bg-neutral-800 px-2 py-0.5 text-xs uppercase">
                         {tournament.status}
                     </span>
+                    {accessToken && (
+                        <a
+                            href={`/app/tournaments/${tournament.id}/manage`}
+                            className="rounded bg-white px-3 py-1 text-xs font-semibold text-black"
+                        >
+                            Gestionar
+                        </a>
+                    )}
                 </div>
             </header>
 

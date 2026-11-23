@@ -8,9 +8,11 @@ import {
 import { Match, StandingsRow } from "../models/match.models";
 
 // matches/standings === undefined means the fetch is still in flight.
+// refreshToken can be bumped to force a refetch.
 export function useStageData(
     stageId: number | undefined,
-    format: string | undefined
+    format: string | undefined,
+    refreshToken = 0
 ) {
     const [matches, setMatches] = useState<Match[] | undefined>(undefined);
     const [standings, setStandings] = useState<StandingsRow[] | undefined>(
@@ -52,7 +54,7 @@ export function useStageData(
         return () => {
             cancelled = true;
         };
-    }, [stageId, format, needsStandings]);
+    }, [stageId, format, needsStandings, refreshToken]);
 
     return {
         matches,
