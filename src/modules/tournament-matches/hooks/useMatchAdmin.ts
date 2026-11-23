@@ -6,6 +6,8 @@ import {
     generateStageMatches,
     setMatchResult,
     setMatchTeams,
+    transitionStage,
+    StageTransition,
 } from "../services/matches-admin.service";
 
 interface AdminActionState {
@@ -82,9 +84,23 @@ export function useMatchAdmin(onSuccess: () => void) {
         [run]
     );
 
+    const transition = useCallback(
+        (stageId: number, accessToken: string, status: StageTransition, label: string) =>
+            run(() => transitionStage(stageId, accessToken, status), label),
+        [run]
+    );
+
     const clearFeedback = useCallback(() => {
         setState((s) => ({ ...s, error: null, success: null }));
     }, []);
 
-    return { ...state, generate, nextRound, reportResult, assignTeams, clearFeedback };
+    return {
+        ...state,
+        generate,
+        nextRound,
+        reportResult,
+        assignTeams,
+        transition,
+        clearFeedback,
+    };
 }

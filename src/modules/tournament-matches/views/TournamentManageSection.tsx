@@ -103,6 +103,42 @@ function StageManageContent({ stage, accessToken }: StageManageContentProps) {
                         </button>
                     )}
 
+                {stage.status === "PENDING" && (
+                    <button
+                        onClick={() =>
+                            admin.transition(
+                                stage.id,
+                                accessToken,
+                                "IN_PROGRESS",
+                                "Etapa iniciada"
+                            )
+                        }
+                        disabled={admin.loading}
+                        className="rounded bg-white px-4 py-1.5 text-sm font-semibold text-black disabled:opacity-40"
+                    >
+                        Iniciar etapa
+                    </button>
+                )}
+
+                {stage.status === "IN_PROGRESS" &&
+                    matches &&
+                    matches.length > 0 && (
+                        <button
+                            onClick={() =>
+                                admin.transition(
+                                    stage.id,
+                                    accessToken,
+                                    "COMPLETED",
+                                    "Etapa finalizada"
+                                )
+                            }
+                            disabled={admin.loading}
+                            className="rounded border border-white px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-40"
+                        >
+                            Finalizar etapa
+                        </button>
+                    )}
+
                 {admin.loading && (
                     <span className="text-xs text-neutral-500">
                         Procesando…

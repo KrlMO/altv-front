@@ -68,3 +68,20 @@ export async function setMatchTeams(
         accessToken
     );
 }
+
+export type StageTransition = "IN_PROGRESS" | "COMPLETED";
+
+export async function transitionStage(
+    stageId: number,
+    accessToken: string,
+    status: StageTransition
+): Promise<void> {
+    await apiFetch(
+        `/v1/stages/${stageId}/status`,
+        {
+            method: "PATCH",
+            body: JSON.stringify({ status }),
+        },
+        accessToken
+    );
+}
