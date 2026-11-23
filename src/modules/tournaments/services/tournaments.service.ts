@@ -1,6 +1,12 @@
 import { apiFetch } from "@/lib/api";
 import { SuccessResponse } from "@/types/api";
-import { PaginatedTournaments, TournamentFilters } from "../dto/tournament.dto";
+import {
+    PaginatedTournaments,
+    TournamentFilters,
+    TournamentItemDTO,
+} from "../dto/tournament.dto";
+import { TournamentItem } from "../models/tournament.models";
+import { mapTournamentResponseToModel } from "../mappers/tournament.mapper";
 
 export async function fetchTournaments(
     filters: TournamentFilters
@@ -26,4 +32,11 @@ export async function fetchTournaments(
     );
 
     return response.data;
+}
+
+export async function fetchTournamentById(id: number): Promise<TournamentItem> {
+    const response = await apiFetch<
+        SuccessResponse<TournamentItemDTO>
+    >(`/v1/tournaments/${id}`, { method: "GET" });
+    return mapTournamentResponseToModel(response.data);
 }

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { TournamentItem } from "../../models/tournament.models";
 
 interface TournamentResultProps {
@@ -24,7 +25,10 @@ export function TournamentResult({ tournament }: TournamentResultProps) {
         : undefined;
 
     return (
-        <div className="flex items-center gap-3 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+        <Link
+            href={`/tournaments/${tournament.id}`}
+            className="flex items-center gap-3 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition"
+        >
             {tournament.logo ? (
                 <img
                     src={tournament.logo}
@@ -67,6 +71,6 @@ export function TournamentResult({ tournament }: TournamentResultProps) {
                     {formatStartDate(tournament.startAt)}
                 </p>
             </div>
-        </div>
+        </Link>
     );
 }
