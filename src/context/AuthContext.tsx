@@ -16,6 +16,7 @@ type AuthState = {
     user: User | null;
     accessToken: string | null;
     loading: boolean;
+    authLoading: boolean;
     error: string | null;
     login: (data: LoginDTO) => Promise<boolean>;
     logout: () => void;
@@ -104,6 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 user,
                 accessToken,
                 loading,
+                authLoading: !initialized,
                 error,
                 login,
                 logout,

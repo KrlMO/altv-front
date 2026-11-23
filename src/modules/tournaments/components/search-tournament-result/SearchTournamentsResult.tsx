@@ -43,18 +43,23 @@ export function SearchTournamentsResult({
 
     return (
         <div>
-            <div className="flex items-center justify-between gap-4 mb-4">
-                {gameName && (
-                    <h2 className="text-xl font-bold">
-                        Torneos de{" "}
-                        <span className="text-btn-secondary">{gameName}</span>
-                    </h2>
-                )}
-                {!gameName && (
-                    <h2 className="text-xl font-bold">Torneos</h2>
-                )}
+            <div>
+                <div className="flex items-center justify-between gap-4 mb-4">
+                    {gameName && (
+                        <h2 className="text-xl font-bold">
+                            Torneos de{" "}
+                            <span className="text-btn-secondary">{gameName}</span>
+                        </h2>
+                    )}
+                    {!gameName && (
+                        <h2 className="text-xl font-bold">Torneos</h2>
+                    )}
+                </div>
+                <div>
+                    
+                </div>
             </div>
-
+               
             <div className="mb-4">
                 <SearchBar
                     compact

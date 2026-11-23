@@ -5,6 +5,7 @@ import { SelectCountry } from "@/modules/shared/country/components/SelectCountry
 import { SelectRegion } from "@/modules/shared/region/components/SelectRegion";
 import { Pagination } from "@/components/ui/pagination/Pagination";
 import { MainButton } from "@/components/ui/buttom/MainButton";
+import { useAuth } from "@/context/AuthContext";
 import { useTeamGames } from "../../hooks/useTeamGames";
 import { TeamResult } from "./TeamResult";
 
@@ -14,6 +15,7 @@ interface SearchTeamResultProps {
 }
 
 export function SearchTeamResult({ gameId, gameName }: SearchTeamResultProps) {
+    const { user } = useAuth();
     const {
         setName,
         regionId,
@@ -31,15 +33,20 @@ export function SearchTeamResult({ gameId, gameName }: SearchTeamResultProps) {
     return (
         <div>
             <div className="flex items-center justify-between gap-4 mb-4">
-                {gameName && (
-                    <h2 className="text-xl font-bold">
-                        Equipos de{" "}
-                        <span className="text-btn-secondary">{gameName}</span>
-                    </h2>
+                <h2 className="text-xl font-bold">
+                    Equipos
+                    {gameName && (
+                        <>
+                            {" "}de{" "}
+                            <span className="text-btn-secondary">{gameName}</span>
+                        </>
+                    )}
+                </h2>
+                {user && (
+                    <MainButton type="button" className="px-6 shrink-0" onClick={() => window.location.href = "/app/teams/manage"}>
+                        Crear Equipo
+                    </MainButton>
                 )}
-                <MainButton type="button" className="px-6 shrink-0" onClick={() => window.location.href = "/app/teams/manage"}>
-                    Crear Equipo
-                </MainButton>
             </div>
 
             <div className="mb-4">
