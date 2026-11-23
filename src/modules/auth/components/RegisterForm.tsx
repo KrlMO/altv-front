@@ -12,7 +12,7 @@ import { AltvButton } from "@/components/ui/buttom/AltvButton";
 import { useRouter } from "next/navigation";
 
 export function RegisterForm() {
-    const { register, loading, error } = useRegister();
+    const { register, loading } = useRegister();
     const router = useRouter();
     const [form, setForm] = React.useState({
         first_name: "",

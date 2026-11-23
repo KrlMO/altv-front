@@ -31,11 +31,29 @@ export function useTeamPermission(teamId: string | null) {
     }, [accessToken, teamId]);
 
     useEffect(() => {
-        load();
-    }, [load]);
+        if (!accessToken || !teamId) return;
+        let cancelled = false;
+        (async () => {
+            try {
+                const teams = await fetchMyTeams(accessToken);
+                if (cancelled) return;
+                const team = teams.find((t) => t.id === teamId);
+                setMemberRole((team?.member_role as TeamMemberRole) || null);
+            } catch {
+                if (!cancelled) setMemberRole(null);
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, [accessToken, teamId]);
 
+    // Derived: no team selected means no role.
+    const effectiveRole = teamId ? memberRole : null;
     const canAdminRosters =
-        memberRole !== null && ADMIN_ROLES.includes(memberRole);
+        effectiveRole !== null && ADMIN_ROLES.includes(effectiveRole);
 
-    return { memberRole, canAdminRosters, loading, reload: load };
+    return { memberRole: effectiveRole, canAdminRosters, loading, reload: load };
 }

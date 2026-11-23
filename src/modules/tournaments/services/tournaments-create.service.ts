@@ -12,11 +12,6 @@ export interface CreateTournamentPayload {
     organizer_type: "COMMUNITY" | "OFFICIAL";
 }
 
-export interface GameItem {
-    id: number;
-    name: string;
-}
-
 export async function createTournament(
     accessToken: string,
     payload: CreateTournamentPayload
@@ -30,11 +25,4 @@ export async function createTournament(
         accessToken
     );
     return response.data.id;
-}
-
-export async function fetchGames(accessToken?: string): Promise<GameItem[]> {
-    const response = await apiFetch<SuccessResponse<GameItem[]>>("/v1/games", {
-        method: "GET",
-    }, accessToken);
-    return response.data;
 }

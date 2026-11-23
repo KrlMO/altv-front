@@ -12,20 +12,15 @@ export function useGames(debounceMs = 300) {
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
-        if (!query.trim()) {
-            setGames([]);
-            setLoading(false);
-            return;
-        }
-
-        setLoading(true);
-        setError(null);
+        if (!query.trim()) return;
 
         if (timerRef.current) {
             clearTimeout(timerRef.current);
         }
 
         timerRef.current = setTimeout(async () => {
+            setLoading(true);
+            setError(null);
             try {
                 const results = await searchGames(query.trim());
                 setGames(results.slice(0, 5));
@@ -44,5 +39,8 @@ export function useGames(debounceMs = 300) {
         };
     }, [query, debounceMs]);
 
-    return { query, setQuery, games, loading, error };
+    // Derived: no results are shown while the query is empty.
+    const visibleGames = query.trim() ? games : [];
+
+    return { query, setQuery, games: visibleGames, loading, error };
 }

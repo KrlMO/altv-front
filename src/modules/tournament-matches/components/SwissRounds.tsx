@@ -23,7 +23,7 @@ export function SwissRounds({ matches, stage }: SwissRoundsProps) {
 
     if (sortedRounds.length === 0) {
         return (
-            <p className="text-sm text-neutral-500">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">
                 Aún no hay partidos generados en esta etapa.
             </p>
         );
@@ -33,7 +33,7 @@ export function SwissRounds({ matches, stage }: SwissRoundsProps) {
         <div className="flex flex-col gap-6">
             {sortedRounds.map(([round, roundMatches]) => (
                 <section key={round}>
-                    <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                    <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
                         {labels.get(round) ?? `Ronda ${round}`}
                     </h4>
                     <div className="grid gap-3 sm:grid-cols-2">

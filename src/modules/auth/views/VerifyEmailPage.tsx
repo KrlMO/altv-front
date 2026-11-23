@@ -45,14 +45,14 @@ export function VerifyEmailPage() {
 
                 setIsValid(true);
 
-            } catch (error) {
+            } catch {
                 router.replace("/auth/login");
                 setIsValid(false);
             }
         };
         hasRun.current = true;
         check();
-    }, [email]);
+    }, [email, router]);
 
     if (isValid === null) {
         return <div className="text-center mt-20">Validando...</div>;

@@ -14,20 +14,15 @@ export function usePlayerSearch(debounceMs = 300) {
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
-        if (!query.trim()) {
-            setPlayers([]);
-            setLoading(false);
-            return;
-        }
-
-        setLoading(true);
-        setError(null);
+        if (!query.trim()) return;
 
         if (timerRef.current) {
             clearTimeout(timerRef.current);
         }
 
         timerRef.current = setTimeout(async () => {
+            setLoading(true);
+            setError(null);
             try {
                 const results = await searchPlayers(query.trim(), accessToken ?? "");
                 setPlayers(results.slice(0, 5));
@@ -46,5 +41,8 @@ export function usePlayerSearch(debounceMs = 300) {
         };
     }, [query, debounceMs, accessToken]);
 
-    return { query, setQuery, players, loading, error };
+    // Derived: no results are shown while the query is empty.
+    const visiblePlayers = query.trim() ? players : [];
+
+    return { query, setQuery, players: visiblePlayers, loading, error };
 }

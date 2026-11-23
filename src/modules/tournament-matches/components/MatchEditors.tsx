@@ -2,12 +2,19 @@
 
 import { useState } from "react";
 import { Match, StandingsRow } from "../models/match.models";
+import { MainButton } from "@/components/ui/buttom/MainButton";
 
 interface MatchResultEditorProps {
     match: Match;
     disabled: boolean;
     onSave: (scoreA: number, scoreB: number) => void;
 }
+
+const inputClass =
+    "w-14 rounded-lg border border-zinc-300 bg-white px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-btn-primary/60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100";
+
+const selectClass =
+    "rounded-lg border border-zinc-300 bg-white px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-btn-primary/60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100";
 
 // Result inputs for a playable match; shows the final score when done.
 export function MatchResultEditor({
@@ -24,14 +31,14 @@ export function MatchResultEditor({
 
     if (match.status === "COMPLETED") {
         return (
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
                 Resultado final: {match.scoreA}-{match.scoreB}
             </p>
         );
     }
     if (!match.teamA || !match.teamB) {
         return (
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
                 Asigna ambos equipos para poder cargar un resultado.
             </p>
         );
@@ -45,24 +52,25 @@ export function MatchResultEditor({
                 aria-label={`Puntos ${match.teamA.teamName}`}
                 value={scoreA}
                 onChange={(e) => setScoreA(e.target.value)}
-                className="w-14 rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm"
+                className={inputClass}
             />
-            <span className="text-neutral-500">-</span>
+            <span className="text-zinc-500 dark:text-zinc-400">-</span>
             <input
                 type="number"
                 min={0}
                 aria-label={`Puntos ${match.teamB.teamName}`}
                 value={scoreB}
                 onChange={(e) => setScoreB(e.target.value)}
-                className="w-14 rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm"
+                className={inputClass}
             />
-            <button
+            <MainButton
+                type="button"
                 disabled={disabled || scoreA === "" || scoreB === ""}
                 onClick={() => onSave(Number(scoreA), Number(scoreB))}
-                className="rounded bg-white px-3 py-1 text-xs font-semibold text-black disabled:opacity-40"
+                className="rounded-lg px-3 py-1 text-xs"
             >
                 Guardar
-            </button>
+            </MainButton>
         </div>
     );
 }
@@ -101,7 +109,7 @@ export function MatchTeamsEditor({
                     aria-label="Equipo A"
                     value={teamA}
                     onChange={(e) => setTeamA(e.target.value)}
-                    className="rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm"
+                    className={selectClass}
                 >
                     <option value="">Equipo A…</option>
                     {options.map((p) => (
@@ -116,7 +124,7 @@ export function MatchTeamsEditor({
                     aria-label="Equipo B"
                     value={teamB}
                     onChange={(e) => setTeamB(e.target.value)}
-                    className="rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm"
+                    className={selectClass}
                 >
                     <option value="">Equipo B…</option>
                     {options.map((p) => (
@@ -126,7 +134,8 @@ export function MatchTeamsEditor({
                     ))}
                 </select>
             )}
-            <button
+            <MainButton
+                type="button"
                 disabled={
                     disabled ||
                     (openA && !teamA) ||
@@ -139,10 +148,10 @@ export function MatchTeamsEditor({
                         teamB ? Number(teamB) : undefined
                     )
                 }
-                className="rounded bg-white px-3 py-1 text-xs font-semibold text-black disabled:opacity-40"
+                className="rounded-lg px-3 py-1 text-xs"
             >
                 Asignar
-            </button>
+            </MainButton>
         </div>
     );
 }

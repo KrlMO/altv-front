@@ -28,7 +28,7 @@ export function SelectRegion({ label, value, onChange, error }: SelectRegionProp
                 className="w-full h-10 rounded-lg border px-3 text-sm
                     bg-white dark:bg-zinc-900
                     border-zinc-300 dark:border-zinc-700
-                    focus:outline-none focus:ring-2 focus:ring-indigo-500
+                    focus:outline-none focus:ring-2 focus:ring-btn-primary/60
                     disabled:opacity-50"
             >
                 <option value="" disabled>

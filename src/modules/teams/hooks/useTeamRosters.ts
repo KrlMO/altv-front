@@ -47,8 +47,27 @@ export function useTeamRosters(teamId: string | null) {
     }, [accessToken, teamId]);
 
     useEffect(() => {
-        load();
-    }, [load]);
+        if (!accessToken || !teamId) return;
+        let cancelled = false;
+        (async () => {
+            try {
+                const data = await fetchTeamGamesByTeam(teamId, accessToken);
+                if (cancelled) return;
+                setRosters(data ?? []);
+                setError(null);
+            } catch {
+                if (!cancelled) setError("Error al cargar los rosters");
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, [accessToken, teamId]);
+
+    // Derived: no team selected means no rosters.
+    const visibleRosters = accessToken && teamId ? rosters : [];
 
     const fetchMembers = useCallback(
         async (teamGameId: string): Promise<RosterPlayer[]> => {
@@ -211,7 +230,7 @@ export function useTeamRosters(teamId: string | null) {
     }, [accessToken, load]);
 
     return {
-        rosters,
+        rosters: visibleRosters,
         loading,
         saving,
         deactivatingId,

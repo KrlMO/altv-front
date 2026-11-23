@@ -1,18 +1,10 @@
 import { apiFetch } from "@/lib/api";
 import { SuccessResponse } from "@/types/api";
+import { OrganizationItem } from "../models/organization.models";
 import {
     OrganizationDTO,
     OrganizationItemDTO,
 } from "../dto/organization.dto";
-
-export interface OrganizationItem {
-    id: number;
-    name: string;
-    description?: string;
-    logo?: string;
-    roles: string[];
-    permissions: string[];
-}
 
 export async function fetchMyOrganizations(
     accessToken: string
@@ -50,6 +42,19 @@ function toItem(dto: OrganizationItemDTO): OrganizationItem {
         roles: dto.roles,
         permissions: dto.permissions,
     };
+}
+
+// Search over the user's own organizations (client-side filtering).
+export async function searchMyOrganizations(
+    accessToken: string,
+    query: string
+): Promise<OrganizationItem[]> {
+    const normalized = query.trim().toLowerCase();
+    const all = await fetchMyOrganizations(accessToken);
+    if (!normalized) return all;
+    return all.filter((org) =>
+        org.name.toLowerCase().includes(normalized)
+    );
 }
 
 export async function createOrganization(

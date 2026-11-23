@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { TournamentItem } from "../../models/tournament.models";
+import { StatusBadge } from "@/components/ui/card/StatusBadge";
 
 interface TournamentResultProps {
     tournament: TournamentItem;
@@ -19,6 +22,13 @@ export function formatStartDate(value: string): string {
     });
 }
 
+export function formatStartTime(value: string): string {
+    return new Date(value).toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+}
+
 export function TournamentResult({ tournament }: TournamentResultProps) {
     const organizerLabel = tournament.organizerType
         ? organizerLabels[tournament.organizerType] ?? tournament.organizerType
@@ -27,49 +37,62 @@ export function TournamentResult({ tournament }: TournamentResultProps) {
     return (
         <Link
             href={`/tournaments/${tournament.id}`}
-            className="flex items-center gap-3 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition"
+            className="group flex flex-wrap items-center gap-3 rounded-lg border border-zinc-200 p-3 transition-colors hover:border-btn-primary/60 hover:bg-zinc-50 sm:flex-nowrap dark:border-zinc-700 dark:hover:border-btn-primary/60 dark:hover:bg-altv-maindark/60"
         >
             {tournament.logo ? (
                 <img
                     src={tournament.logo}
                     alt={tournament.name}
-                    className="w-10 h-10 rounded-lg object-cover shrink-0"
+                    className="h-10 w-10 shrink-0 rounded-lg object-cover"
                 />
             ) : (
-                <div className="w-10 h-10 rounded-lg bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-500 dark:text-zinc-400 text-xs font-bold shrink-0">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-200 text-xs font-bold text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400">
                     {tournament.gameName.slice(0, 2).toUpperCase()}
                 </div>
             )}
 
-            <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="text-sm font-medium truncate">
+            <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <h3 className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
                         {tournament.name}
                     </h3>
+                    <StatusBadge status={tournament.status} />
                     {tournament.typeName && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 shrink-0">
+                        <span className="shrink-0 rounded-full bg-btn-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-btn-primary">
                             {tournament.typeName}
                         </span>
                     )}
                 </div>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
                     {tournament.gameName}
-                    {organizerLabel && ` · ${organizerLabel}`}
-                    {tournament.countryName &&
-                        ` · ${tournament.countryName}`}
-                    {!tournament.countryName &&
-                        tournament.regionName &&
-                        ` · ${tournament.regionName}`}
+                    <span className="hidden sm:inline">
+                        {organizerLabel && ` · ${organizerLabel}`}
+                        {tournament.countryName && ` · ${tournament.countryName}`}
+                        {!tournament.countryName &&
+                            tournament.regionName &&
+                            ` · ${tournament.regionName}`}
+                    </span>
                 </p>
             </div>
 
-            <div className="text-right shrink-0">
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    Inicia
-                </p>
-                <p className="text-sm font-semibold">
-                    {formatStartDate(tournament.startAt)}
-                </p>
+            <div className="flex shrink-0 items-center gap-3">
+                <div className="text-right">
+                    <p className="text-[10px] uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+                        Inicia
+                    </p>
+                    <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                        {formatStartDate(tournament.startAt)}
+                    </p>
+                    <p className="text-[10px] text-zinc-400 dark:text-zinc-500">
+                        {formatStartTime(tournament.startAt)} hs
+                    </p>
+                </div>
+                <span
+                    aria-hidden
+                    className="hidden text-zinc-400 transition-colors group-hover:text-btn-primary sm:block"
+                >
+                    →
+                </span>
             </div>
         </Link>
     );

@@ -5,7 +5,11 @@ import { fetchTournamentStages } from "../services/matches.service";
 import { Stage } from "../models/match.models";
 
 // stages === undefined means the fetch is still in flight.
-export function useStages(tournamentId: number | undefined) {
+// refreshToken can be bumped to force a refetch.
+export function useStages(
+    tournamentId: number | undefined,
+    refreshToken = 0
+) {
     const [stages, setStages] = useState<Stage[] | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
 
@@ -24,7 +28,7 @@ export function useStages(tournamentId: number | undefined) {
         return () => {
             cancelled = true;
         };
-    }, [tournamentId]);
+    }, [tournamentId, refreshToken]);
 
     return { stages, loading: stages === undefined, error };
 }

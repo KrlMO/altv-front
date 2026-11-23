@@ -23,9 +23,9 @@ export function GeneralButton({
 
     const variants = {
         primary: `
-      bg-[#88008B] text-white
+      bg-btn-primary text-white
       hover:bg-[#6f0072]
-      focus:ring-[#88008B]/50
+      focus:ring-btn-primary/50
     `,
         secondary: `
       bg-zinc-700 text-white

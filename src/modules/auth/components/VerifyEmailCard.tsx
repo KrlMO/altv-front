@@ -23,13 +23,7 @@ function maskEmail(email: string): string {
 
 export function VerifyEmailCard({ email, seconds: initialSeconds }: { email?: string, seconds?: number }) {
     const [seconds, setSeconds] = useState(initialSeconds || 90);
-    const { resend, loading } = useResendVerification();
-
-    useEffect(() => {
-        if (initialSeconds !== undefined) {
-            setSeconds(initialSeconds);
-        }
-    }, [initialSeconds]);
+    const { resend } = useResendVerification();
 
     useEffect(() => {
         if (seconds <= 0) return;

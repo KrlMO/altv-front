@@ -14,7 +14,9 @@ function TeamRow({
     return (
         <div
             className={`flex items-center justify-between gap-3 rounded px-2 py-1.5 text-sm ${
-                isWinner ? "text-white font-semibold" : "text-neutral-400"
+                isWinner
+                    ? "font-semibold text-zinc-900 dark:text-white"
+                    : "text-zinc-500 dark:text-zinc-400"
             }`}
         >
             <span className="truncate">{name}</span>
@@ -55,16 +57,16 @@ export function MatchCard({ match, showRoundLabel, highlight }: MatchCardProps) 
             className={`rounded-lg border p-2.5 ${
                 highlight
                     ? "border-amber-500/60 bg-amber-500/5"
-                    : "border-neutral-800 bg-neutral-900"
+                    : "border-zinc-200 bg-white dark:border-zinc-700 dark:bg-altv-bgcontent"
             }`}
         >
             {showRoundLabel && (
-                <p className="mb-1.5 text-xs text-neutral-500">
+                <p className="mb-1.5 text-xs text-zinc-500 dark:text-zinc-400">
                     Ronda {match.roundNumber} · Partido {match.matchNumber}
                 </p>
             )}
             {match.teamA && match.teamB ? (
-                <div className="divide-y divide-neutral-800">
+                <div className="divide-y divide-zinc-200 dark:divide-zinc-700">
                     <TeamRow
                         name={match.teamA.teamName}
                         score={match.scoreA}
@@ -78,13 +80,13 @@ export function MatchCard({ match, showRoundLabel, highlight }: MatchCardProps) 
                 </div>
             ) : (
                 <div className="flex items-center justify-between px-2 py-1.5 text-sm">
-                    <span className="text-neutral-300">
+                    <span className="text-zinc-600 dark:text-zinc-300">
                         {match.teamA?.teamName ?? "Por definir"} vs{" "}
                         {match.teamB?.teamName ?? "Por definir"}
                     </span>
                 </div>
             )}
-            <div className="mt-1.5 flex items-center justify-between text-xs text-neutral-500">
+            <div className="mt-1.5 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
                 <span>{statusLabel}</span>
                 {match.bestOf && (
                     <span>

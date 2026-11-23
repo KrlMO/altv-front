@@ -142,7 +142,7 @@ export function RosterStep({
                                         type="button"
                                         onClick={() => handleOpenEdit(roster)}
                                         disabled={saving || deactivatingId === roster.id || activatingId === roster.id}
-                                        className="text-xs text-zinc-400 hover:text-[#88008B] transition-colors disabled:opacity-40"
+                                        className="text-xs text-zinc-400 hover:text-btn-primary transition-colors disabled:opacity-40"
                                     >
                                         Editar
                                     </button>
@@ -181,7 +181,7 @@ export function RosterStep({
                     type="button"
                     onClick={handleOpenAdd}
                     disabled={saving}
-                    className="w-full p-4 rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center gap-2 text-sm text-zinc-500 hover:border-[#88008B] hover:text-[#88008B] transition-colors disabled:opacity-40"
+                    className="w-full p-4 rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center gap-2 text-sm text-zinc-500 hover:border-btn-primary hover:text-btn-primary transition-colors disabled:opacity-40"
                 >
                     <span className="text-lg">+</span>
                     {saving ? "Guardando..." : "Añadir roster"}

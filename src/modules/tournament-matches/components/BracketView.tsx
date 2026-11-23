@@ -40,7 +40,7 @@ export function BracketView({ matches, stage }: BracketViewProps) {
                                         ? "text-amber-400"
                                         : section === "lb"
                                           ? "text-sky-400"
-                                          : "text-neutral-500"
+                                          : "text-zinc-500 dark:text-zinc-400"
                                 }`}
                             >
                                 {labels.get(round) ?? `Ronda ${round}`}

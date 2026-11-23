@@ -146,7 +146,7 @@ export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
                             <button
                                 type="button"
                                 onClick={reset}
-                                className="text-sm text-[#88008B] hover:underline"
+                                className="text-sm text-btn-primary hover:underline"
                             >
                                 Crear otro equipo
                             </button>
@@ -157,7 +157,7 @@ export function TeamDetail({ teamId, onSaved }: TeamDetailProps) {
                             <button
                                 type="button"
                                 onClick={prevStep}
-                                className="text-sm text-[#88008B] hover:underline"
+                                className="text-sm text-btn-primary hover:underline"
                             >
                                 Volver
                             </button>
